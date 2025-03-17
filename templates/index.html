@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Index</title>
 </head>
 <body>
-$END$
+{% extends "base.html" %}
+{% block title %}Beginscherm{% endblock %}
+{% block content %}
+    <h1>Welkom op het beginscherm!</h1>
+    <p><a href="{{ url_for('loginForm') }}" class="btn btn-primary">Ga naar het inlogformulier.</a></p>
+{% endblock %}
 </body>
 </html>
