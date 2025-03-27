@@ -21,7 +21,6 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
 
-db.init_app(app)
 @app.before_request
 def create_tables():
     db.create_all()
