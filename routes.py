@@ -5,12 +5,10 @@ from models import User
 from flask_login import login_user, current_user, logout_user, login_required
 
 @app.route('/')
-
-@app.route('/home')
 def index():
     if current_user.is_authenticated:
-        return redirect(url_for('inventory'))
-    return redirect(url_for('login'))
+        return redirect(url_for('/inventory'))
+    return redirect(url_for('/login'))
 
 
 @app.route('/register', methods=['GET', 'POST'])

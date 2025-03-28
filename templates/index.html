@@ -1,5 +1,8 @@
-{% extends "base.html" %}
-{% block content %}
-    <h1>Welkom op het beginscherm!</h1>
-    <p><a href="{{ url_for('login') }}" class="btn btn-primary">Ga naar het inlogformulier.</a></p>
+{% extends "base.html" %} {% block content %}
+<h1>Welkom op het beginscherm!</h1>
+<p>
+    <a href="{{ url_for('login') }}" class="btn btn-primary">
+        Ga naar het inlogformulier.
+    </a>
+</p>
 {% endblock %}
