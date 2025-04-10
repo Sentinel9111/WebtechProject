@@ -1,0 +1,13 @@
+#page {
+    width: 96rem;
+    margin: 0 auto;
+}
+
+#error-container {
+    position: absolute;
+
+    width: 33%;
+
+    top: 1rem;
+    right: 1rem;
+}
