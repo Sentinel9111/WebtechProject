@@ -30,7 +30,7 @@ class AddEquipmentForm(FlaskForm):
     name = StringField("Naam", validators=[DataRequired(), Length(min=1, max=100)])
     brand = StringField("Merk", validators=[DataRequired(), Length(min=1, max=100)])
     category = SelectField("Categorie", validators=[DataRequired()])
-    count = IntegerField("Aantal", validators=[DataRequired(), NumberRange(min=1, max=1000)])
+    count = IntegerField("Aantal", validators=[DataRequired(), NumberRange(min=1)])
     submit = SubmitField("Voeg toe")
 
 class AddCableForm(FlaskForm):
@@ -38,7 +38,7 @@ class AddCableForm(FlaskForm):
     conn_b = SelectField("Connector B", validators=[DataRequired()])
     length = DecimalField("Lengte (m)", validators=[DataRequired(), NumberRange(min=0, max=1000)])
     category = SelectField("Categorie", validators=[DataRequired()])
-    count = IntegerField("Aantal", validators=[DataRequired(), NumberRange(min=1, max=1000)])
+    count = IntegerField("Aantal", validators=[DataRequired(), NumberRange(min=1)])
     submit = SubmitField("Voeg toe")
 
 class AddCategoryForm(FlaskForm):

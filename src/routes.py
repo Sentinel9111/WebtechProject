@@ -111,7 +111,17 @@ def equipment_edit(id):
         except:
             flash("Niet gelukt om equipment bij te werken!", "danger")
 
-    return render_template("equipment/add-or-edit.html", title="Bewerk Equipment", form=form)
+    return render_template("equipment/add-or-edit.html", title="Bewerk Equipment", form=form, equipment_id=id)
+
+@app.route("/equipment/<int:id>/delete")
+@login_required
+def equipment_delete(id):
+    equipment = Equipment.query.get_or_404(id)
+    Equipment.query.filter_by(id=id).delete()
+    db.session.commit()
+
+    flash("Equipment verwijderd!", "success")
+    return redirect("/")
 
 @app.route("/category/add", methods=['GET', 'POST'])
 @login_required
@@ -153,6 +163,16 @@ def category_edit(id):
             flash("Niet gelukt om categorie bij te werken!", "danger")
 
     return render_template("category/add-or-edit.html", title="Bewerk Categorie", form=form)
+
+@app.route("/category/<int:id>/delete")
+@login_required
+def category_delete(id):
+    category = Category.query.get_or_404(id)
+    Category.query.filter_by(id=id).delete()
+    db.session.commit()
+
+    flash("Categorie verwijderd!", "success")
+    return redirect("/")
 
 @app.route("/cable/add", methods=['GET', 'POST'])
 @login_required
@@ -207,7 +227,17 @@ def cable_edit(id):
         except:
             flash("Niet gelukt om kabel te wijzigen!", "danger")
 
-    return render_template("cable/add-or-edit.html", title="Werk bij Kabel", form=form)
+    return render_template("cable/add-or-edit.html", title="Werk bij Kabel", form=form, cable_id=id)
+
+@app.route("/cable/<int:id>/delete")
+@login_required
+def cable_delete(id):
+    cable = Cable.query.get_or_404(id)
+    Cable.query.filter_by(id=id).delete()
+    db.session.commit()
+
+    flash("Kabel verwijderd!", "success")
+    return redirect("/")
 
 @app.route("/connector/add", methods=['GET', 'POST'])
 @login_required
@@ -251,3 +281,16 @@ def connector_edit(id):
             flash("Niet gelukt om connector te wijzigen!", "danger")
 
     return render_template("connector/add-or-edit.html", title="Werk bij Connector", form=form)
+
+@app.route("/connector/<int:id>/delete")
+@login_required
+def connector_delete(id):
+    try:
+        connector = Connector.query.get_or_404(id)
+        Connector.query.filter_by(id=id).delete()
+        db.session.commit()
+
+        flash("Connector verwijderd!", "success")
+        return redirect("/")
+    except:
+        flash("Niet gelukt om connector te verwijderen!", "danger")
