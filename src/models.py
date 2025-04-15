@@ -23,8 +23,8 @@ class Job(db.Model):
         return f"Job('{self.id}', '{self.name}', '{self.description}')"
 
 class UserJob(db.Model):
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    job_id = db.Column(db.Integer, db.ForeignKey('job.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True, nullable=False)
+    job_id = db.Column(db.Integer, db.ForeignKey('job.id'), primary_key=True, nullable=False)
 
     def __repr__(self):
         return f"UserJob('{self.user_id}', '{self.job_id}')"
@@ -50,15 +50,15 @@ class Cable(db.Model):
         return f"Cable('{self.id}', '{self.name}', '{self.category_id}', '{self.length}', '{self.conn_a_id}', '{self.conn_b_id}')"
 
 class EquipmentJob(db.Model):
-    equipment_id = db.Column(db.Integer, db.ForeignKey('equipment.id'), nullable=False)
-    job_id = db.Column(db.Integer, db.ForeignKey('job.id'), nullable=False)
+    equipment_id = db.Column(db.Integer, db.ForeignKey('equipment.id'), primary_key=True, nullable=False)
+    job_id = db.Column(db.Integer, db.ForeignKey('job.id'), primary_key=True, nullable=False)
 
     def __repr__(self):
         return f"EquipmentJob('{self.equipment_id}', '{self.job_id}')"
 
 class CableJob(db.Model):
-    cable_id = db.Column(db.Integer, db.ForeignKey('cable.id'), nullable=False)
-    job_id = db.Column(db.Integer, db.ForeignKey('job.id'), nullable=False)
+    cable_id = db.Column(db.Integer, db.ForeignKey('cable.id'), primary_key=True, nullable=False)
+    job_id = db.Column(db.Integer, db.ForeignKey('job.id'), primary_key=True, nullable=False)
 
     def __repr__(self):
         return f"CableJob('{self.cable_id}', '{self.job_id}')"
