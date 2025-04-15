@@ -162,7 +162,7 @@ def category_edit(id):
         except:
             flash("Niet gelukt om categorie bij te werken!", "danger")
 
-    return render_template("category/add-or-edit.html", title="Bewerk Categorie", form=form)
+    return render_template("category/add-or-edit.html", title="Bewerk Categorie", form=form, category_id=id)
 
 @app.route("/category/<int:id>/delete")
 @login_required
@@ -280,7 +280,7 @@ def connector_edit(id):
         except:
             flash("Niet gelukt om connector te wijzigen!", "danger")
 
-    return render_template("connector/add-or-edit.html", title="Werk bij Connector", form=form)
+    return render_template("connector/add-or-edit.html", title="Werk bij Connector", form=form, connector_id=id)
 
 @app.route("/connector/<int:id>/delete")
 @login_required
