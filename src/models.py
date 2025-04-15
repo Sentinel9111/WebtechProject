@@ -12,7 +12,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
 
     def __repr__(self):
-        return f"User('{self.username}', '{self.email}')"
+        return f"User('{self.id}', {self.username}', '{self.email}')"
 
 class Job(db.Model):
     id = db.Column(db.Integer, primary_key=True)
