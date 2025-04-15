@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
+from wtforms.fields import SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from models import User
+from models import User, Category
 
 class LoginForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
@@ -30,3 +31,29 @@ def validate_email(self, email):
     user = User.query.filter_by(email=email.data).first()
     if user:
         raise ValidationError("Gebruik een ander email adres.")
+
+class AddEquipmentForm(FlaskForm):
+    category_choices = []
+    # print(Category.query.all())
+    # for c in Category.query.all():
+        # print(c.id, c.name)
+        # category_choices.append((c.id, c.name))
+
+    name = StringField(
+        "Naam", validators=[DataRequired(), Length(min=1, max=100)]
+    )
+    brand = StringField("Merk", validators=[DataRequired(), Length(min=1, max=100)])
+    category = SelectField("Categorie", validators=[DataRequired()], choices=category_choices)
+    submit = SubmitField("Voeg toe")
+
+class AddCableForm(FlaskForm):
+    category_choices = []
+    connector_choices = []
+
+    name = StringField("Naam", validators=[DataRequired(), Length(min=1, max=100)])
+    brand = StringField("Merk", validators=[DataRequired(), Length(min=1, max=100)])
+    length = StringField("Lengte", validators=[DataRequired(), Length(min=1, max=100)])
+    category = SelectField("Categorie", validators=[DataRequired()], choices=category_choices)
+    conn_a = SelectField("Connector", validators=[DataRequired()], choices=connector_choices)
+    conn_b = SelectField("Connector", validators=[DataRequired()], choices=connector_choices)
+    submit = SubmitField("Voeg toe")
