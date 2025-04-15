@@ -1,6 +1,6 @@
 from app import app, db, bcrypt
-from forms import AddEquipmentForm, AddCategoryForm, RegistrationForm, LoginForm
-from models import Equipment, User, Cable, Category
+from forms import AddEquipmentForm, AddCategoryForm, AddCableForm, AddConnectorForm, RegistrationForm, LoginForm
+from models import Equipment, User, Cable, Category, Connector
 
 from flask import render_template, flash, redirect
 from flask_login import login_user, current_user, logout_user, login_required
@@ -66,7 +66,6 @@ def account():
 def inventory():
     cables = Cable.query.all()
     equipment = Equipment.query.all()
-    print(equipment)
     return render_template('inventory.html', title="Inventaris", equipment=equipment, cables=cables)
 
 @app.route("/equipment/add", methods=['GET', 'POST'])
@@ -79,7 +78,8 @@ def equipment_add():
         equipment = Equipment(
             name=form.name.data,
             brand=form.brand.data,
-            category_id=form.category.data
+            category_id=form.category.data,
+            count=form.count.data
         )
 
         try:
@@ -113,3 +113,53 @@ def category_add():
             flash("Niet gelukt om categorie toe te voegen!", "danger")
 
     return render_template("category/add.html", title="Voeg Categorie Toe", form=form)
+
+@app.route("/cable/add", methods=['GET', 'POST'])
+@login_required
+def cable_add():
+    form = AddCableForm()
+    form.conn_a.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
+    form.conn_b.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
+    form.category.choices = [(category.id, category.name) for category in Category.query.all()]
+
+    if form.validate_on_submit():
+        cable = Cable(
+            conn_a_id=form.conn_a.data,
+            conn_b_id=form.conn_b.data,
+            length=form.length.data,
+            category_id=form.category.data,
+            count=form.count.data
+        )
+
+        try:
+            db.session.add(cable)
+            db.session.commit()
+
+            flash("Kabel toegevoegd!", "success")
+            return redirect("/inventory")
+        except:
+            flash("Niet gelukt om kabel toe te voegen!", "danger")
+
+    return render_template("cable/add.html", title="Voeg Kabel Toe", form=form)
+
+@app.route("/connector/add", methods=['GET', 'POST'])
+@login_required
+def connector_add():
+    form = AddConnectorForm()
+
+    if form.validate_on_submit():
+        connector = Connector(
+            name=form.name.data,
+            is_male=form.is_male.data
+        )
+
+        try:
+            db.session.add(connector)
+            db.session.commit()
+
+            flash("Connector toegevoegd!", "success")
+            return redirect("/inventory")
+        except:
+            flash("Niet gelukt om connector toe te voegen!", "danger")
+
+    return render_template("connector/add.html", title="Voeg Connector Toe", form=form)

@@ -34,7 +34,9 @@ class Job(db.Model):
 
 class UserJob(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True, nullable=False)
+    user = db.relationship('User', foreign_keys=[user_id])
     job_id = db.Column(db.Integer, db.ForeignKey('job.id'), primary_key=True, nullable=False)
+    job = db.relationship('Job', foreign_keys=[job_id])
 
     def __init__(self, user_id, job_id):
         self.user_id = user_id
@@ -48,37 +50,43 @@ class Equipment(db.Model):
     name = db.Column(db.String(100), nullable=False)
     brand = db.Column(db.String(100), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
-    category = db.relationship('Category', backref=db.backref('equipment', lazy=True))
+    category = db.relationship('Category', foreign_keys=[category_id])
+    count = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, name, brand, category_id):
+    def __init__(self, name, brand, category_id, count):
         self.name = name
         self.brand = brand
         self.category_id = category_id
+        self.count = count
 
     def __repr__(self):
-        return f"Equipment('{self.id}', '{self.name}', '{self.brand}', '{self.category_id}')"
+        return f"Equipment('{self.id}', '{self.name}', '{self.brand}', '{self.category_id}', '{self.count}')"
 
 class Cable(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
     length = db.Column(db.Float, nullable=False)
     conn_a_id = db.Column(db.Integer, db.ForeignKey('connector.id'), nullable=False)
+    conn_a = db.relationship('Connector', foreign_keys=[conn_a_id])
     conn_b_id = db.Column(db.Integer, db.ForeignKey('connector.id'), nullable=False)
+    conn_b = db.relationship('Connector', foreign_keys=[conn_b_id])
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
+    count = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, name, category_id, length, conn_a_id, conn_b_id):
-        self.name = name
-        self.category_id = category_id
-        self.length = length
+    def __init__(self, conn_a_id, conn_b_id, category_id, length, count):
         self.conn_a_id = conn_a_id
         self.conn_b_id = conn_b_id
+        self.length = length
+        self.category_id = category_id
+        self.count = count
 
     def __repr__(self):
-        return f"Cable('{self.id}', '{self.name}', '{self.category_id}', '{self.length}', '{self.conn_a_id}', '{self.conn_b_id}')"
+        return f"Cable('{self.id}', '{self.conn_a_id}', '{self.conn_b_id}', '{self.category_id}', {self.length}, {self.count})"
 
 class EquipmentJob(db.Model):
     equipment_id = db.Column(db.Integer, db.ForeignKey('equipment.id'), primary_key=True, nullable=False)
+    equipment = db.relationship('Equipment', foreign_keys=[equipment_id])
     job_id = db.Column(db.Integer, db.ForeignKey('job.id'), primary_key=True, nullable=False)
+    job = db.relationship('Job', foreign_keys=[job_id])
 
     def __init__(self, equipment_id, job_id):
         self.equipment_id = equipment_id
@@ -89,7 +97,9 @@ class EquipmentJob(db.Model):
 
 class CableJob(db.Model):
     cable_id = db.Column(db.Integer, db.ForeignKey('cable.id'), primary_key=True, nullable=False)
+    cable = db.relationship('Cable', foreign_keys=[cable_id])
     job_id = db.Column(db.Integer, db.ForeignKey('job.id'), primary_key=True, nullable=False)
+    job = db.relationship('Job', foreign_keys=[job_id])
 
     def __init__(self, cable_id, job_id):
         self.cable_id = cable_id
@@ -119,3 +129,9 @@ class Connector(db.Model):
 
     def __repr__(self):
         return f"Connector('{self.id}', '{self.name}', '{self.is_male}')"
+
+    def gender_label(self):
+        if self.is_male:
+            return 'm'
+        else:
+            return 'f'
