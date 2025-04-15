@@ -6,8 +6,11 @@ from flask import render_template, flash, redirect
 from flask_login import login_user, current_user, logout_user, login_required
 
 @app.route("/")
+@login_required
 def index():
-    return render_template("index.html", title="Inventarissysteem")
+    cables = Cable.query.all()
+    equipment = Equipment.query.all()
+    return render_template('index.html', title="Inventaris", equipment=equipment, cables=cables)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -61,13 +64,6 @@ def logout():
 def account():
     return render_template('account.html', title="Account")
 
-@app.route("/inventory")
-@login_required
-def inventory():
-    cables = Cable.query.all()
-    equipment = Equipment.query.all()
-    return render_template('inventory.html', title="Inventaris", equipment=equipment, cables=cables)
-
 @app.route("/equipment/add", methods=['GET', 'POST'])
 @login_required
 def equipment_add():
@@ -87,7 +83,7 @@ def equipment_add():
             db.session.commit()
 
             flash("Equipment toegevoegd!", "success")
-            return redirect("/inventory")
+            return redirect("/")
         except:
             flash("Niet gelukt om equipment toe te voegen!", "danger")
 
@@ -108,7 +104,7 @@ def category_add():
             db.session.commit()
 
             flash("Categorie toegevoegd!", "success")
-            return redirect("/inventory")
+            return redirect("/")
         except:
             flash("Niet gelukt om categorie toe te voegen!", "danger")
 
@@ -136,7 +132,7 @@ def cable_add():
             db.session.commit()
 
             flash("Kabel toegevoegd!", "success")
-            return redirect("/inventory")
+            return redirect("/")
         except:
             flash("Niet gelukt om kabel toe te voegen!", "danger")
 
@@ -158,7 +154,7 @@ def connector_add():
             db.session.commit()
 
             flash("Connector toegevoegd!", "success")
-            return redirect("/inventory")
+            return redirect("/")
         except:
             flash("Niet gelukt om connector toe te voegen!", "danger")
 
