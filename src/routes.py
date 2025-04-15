@@ -1,13 +1,11 @@
 from app import app, db, bcrypt
+from forms import AddEquipmentForm, AddCategoryForm, RegistrationForm, LoginForm
+from models import Equipment, User, Cable, Category
+
 from flask import render_template, flash, redirect
-from forms import RegistrationForm, LoginForm
-from models import Equipment, User
 from flask_login import login_user, current_user, logout_user, login_required
-from models import Cable
-from forms import AddEquipmentForm
 
 @app.route("/")
-
 def index():
     return render_template("index.html", title="Inventarissysteem")
 
@@ -55,8 +53,8 @@ def login():
 @app.route("/logout")
 @login_required
 def logout():
-    logout_user();
-    return redirect("/");
+    logout_user()
+    return redirect("/")
 
 @app.route("/account")
 @login_required
@@ -68,17 +66,20 @@ def account():
 def inventory():
     cables = Cable.query.all()
     equipment = Equipment.query.all()
+    print(equipment)
     return render_template('inventory.html', title="Inventaris", equipment=equipment, cables=cables)
 
-@app.route("/equipment/add")
+@app.route("/equipment/add", methods=['GET', 'POST'])
 @login_required
 def equipment_add():
     form = AddEquipmentForm()
+    form.category.choices = [(category.id, category.name) for category in Category.query.all()]
+
     if form.validate_on_submit():
         equipment = Equipment(
             name=form.name.data,
             brand=form.brand.data,
-            category=form.category.data
+            category_id=form.category.data
         )
 
         try:
@@ -91,3 +92,24 @@ def equipment_add():
             flash("Niet gelukt om equipment toe te voegen!", "danger")
 
     return render_template("equipment/add.html", title="Voeg Equipment Toe", form=form)
+
+@app.route("/category/add", methods=['GET', 'POST'])
+@login_required
+def category_add():
+    form = AddCategoryForm()
+
+    if form.validate_on_submit():
+        category = Category(
+            name=form.name.data,
+        )
+
+        try:
+            db.session.add(category)
+            db.session.commit()
+
+            flash("Categorie toegevoegd!", "success")
+            return redirect("/inventory")
+        except:
+            flash("Niet gelukt om categorie toe te voegen!", "danger")
+
+    return render_template("category/add.html", title="Voeg Categorie Toe", form=form)

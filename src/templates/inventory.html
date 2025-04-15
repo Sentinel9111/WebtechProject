@@ -3,9 +3,10 @@
 
 <section>
     <h2>Equipment</h2>
+    <a href="/equipment/add">Add Equipment</a>
     <ul>
         {% for e in equipment %}
-            <li>{{ e.name }} </li>
+        <li>{{ e.brand }} {{ e.name }} (cat: {{ e.category.name }})</li>
         {% endfor %}
     </ul>
 </section>
@@ -14,7 +15,7 @@
     <h2>Cables</h2>
     <ul>
         {% for c in cables %}
-            <li>{{ c.name }} </li>
+        <li>{{ c.conn_a }} > {{ c.conn_b }} (length: {{ c.length }}m)</li>
         {% endfor %}
     </ul>
 </section>
