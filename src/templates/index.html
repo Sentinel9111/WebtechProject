@@ -6,7 +6,10 @@
     <a href="/equipment/add">Add Equipment</a>
     <ul>
         {% for e in equipment %}
-        <li>{{ e.count }}x {{ e.brand }} {{ e.name }} (cat: {{ e.category.name }})</li>
+        <li>
+            {{ e.count }}x {{ e.brand }} {{ e.name }} (cat: {{ e.category.name }})
+            <a href="/equipment/{{ e.id }}/edit">Bewerk</a>
+        </li>
         {% endfor %}
     </ul>
 </section>
@@ -16,7 +19,10 @@
     <a href="/cable/add">Add Cable</a>
     <ul>
         {% for c in cables %}
-        <li>{{ c.count }}x {{ c.conn_a.name }} ({{ c.conn_a.gender_label() }}) - {{ c.conn_b.name }} ({{ c.conn_b.gender_label() }}) {{ c.length }}m</li>
+        <li>
+            {{ c.count }}x {{ c.conn_a.name }} ({{ c.conn_a.gender_label() }}) - {{ c.conn_b.name }} ({{ c.conn_b.gender_label() }}) {{ c.length }}m
+            <a href="/cable/{{ c.id }}/edit">Bewerk</a>
+        </li>
         {% endfor %}
     </ul>
 </section>
