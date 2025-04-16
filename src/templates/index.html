@@ -45,11 +45,14 @@
             <th data-field="description" data-custom-attribute="description">
                 Beschrijving
             </th>
-            <th data-field="start_date" data-custom-attribute="description">
+            <th data-field="start_date" data-custom-attribute="start_date" data-sortable="true">
                 Startdatum
             </th>
-            <th data-field="end_date" data-custom-attribute="description">
+            <th data-field="end_date" data-custom-attribute="end_date" data-sortable="true">
                 Einddatum
+            </th>
+            <th data-field="action" data-custom-attribute="action">
+                Actie
             </th>
             </thead>
             <tbody>
@@ -59,6 +62,7 @@
                     <td data-text="{{ j.description }}">{{ j.description }}</td>
                     <td data-text="{{ j.start_date }}">{{ j.start_date }}</td>
                     <td data-text="{{ j.end_date }}">{{ j.end_date }}</td>
+                    <td><a href="job/{{ j.id }}/edit">Bewerken</a></td>
                 </tr>
             {% endfor %}
             </tbody>
