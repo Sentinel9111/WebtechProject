@@ -1,5 +1,5 @@
 from app import app, db, bcrypt
-from forms import AddEquipmentForm, AddCategoryForm, AddCableForm, AddConnectorForm, RegistrationForm, LoginForm, AddJobForm
+from forms import EquipmentForm, CategoryForm, CableForm, ConnectorForm, RegistrationForm, LoginForm, JobForm
 from models import Equipment, User, Cable, Category, Connector, Job, EquipmentJob, CableJob
 
 
@@ -8,6 +8,11 @@ from flask_login import login_user, current_user, logout_user, login_required
 from wtforms.fields import IntegerField
 from wtforms.validators import NumberRange
 
+@app.errorhandler(Exception)
+def handle_error(e):
+    code = getattr(e, 'code', 500)
+    return render_template("error.html", code=code, message=str(e)), code
+
 @app.route("/")
 @login_required
 def index():
@@ -15,11 +20,6 @@ def index():
     cables = Cable.query.all()
     equipment = Equipment.query.all()
     return render_template('index.html', title="Inventaris", equipment=equipment, cables=cables, jobs=jobs)
-
-@app.errorhandler(Exception)
-def handle_error(e):
-    code = getattr(e, 'code', 500)
-    return render_template("error.html", code=code, message=str(e)), code
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -76,7 +76,7 @@ def account():
 @app.route("/equipment/add", methods=['GET', 'POST'])
 @login_required
 def equipment_add():
-    form = AddEquipmentForm()
+    form = EquipmentForm()
     form.category.choices = [(category.id, category.name) for category in Category.query.all()]
 
     if form.validate_on_submit():
@@ -102,7 +102,7 @@ def equipment_add():
 @login_required
 def equipment_edit(id):
     equipment = Equipment.query.get_or_404(id)
-    form = AddEquipmentForm(obj=equipment)
+    form = EquipmentForm(obj=equipment)
     form.category.choices = [(category.id, category.name) for category in Category.query.all()]
     form.submit.label.text = "Werk bij"
 
@@ -126,6 +126,7 @@ def equipment_edit(id):
 @login_required
 def equipment_delete(id):
     Equipment.query.filter_by(id=id).delete()
+    EquipmentJob.query.filter_by(equipment_id=id).delete()
     db.session.commit()
 
     flash("Apparatuur verwijderd!", "success")
@@ -134,7 +135,7 @@ def equipment_delete(id):
 @app.route("/category/add", methods=['GET', 'POST'])
 @login_required
 def category_add():
-    form = AddCategoryForm()
+    form = CategoryForm()
 
     if form.validate_on_submit():
         category = Category(
@@ -156,7 +157,7 @@ def category_add():
 @login_required
 def category_edit(id):
     category = Category.query.get_or_404(id)
-    form = AddCategoryForm(obj=category)
+    form = CategoryForm(obj=category)
     form.submit.label.text = "Werk bij"
 
     if form.validate_on_submit():
@@ -184,7 +185,7 @@ def category_delete(id):
 @app.route("/cable/add", methods=['GET', 'POST'])
 @login_required
 def cable_add():
-    form = AddCableForm()
+    form = CableForm()
     form.conn_a.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
     form.conn_b.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
     form.category.choices = [(category.id, category.name) for category in Category.query.all()]
@@ -213,10 +214,11 @@ def cable_add():
 @login_required
 def cable_edit(id):
     cable = Cable.query.get_or_404(id)
-    form = AddCableForm(obj=cable)
+    form = CableForm(obj=cable)
     form.conn_a.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
     form.conn_b.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
     form.category.choices = [(category.id, category.name) for category in Category.query.all()]
+
     form.submit.label.text = "Werk bij"
 
     if form.validate_on_submit():
@@ -240,6 +242,7 @@ def cable_edit(id):
 @login_required
 def cable_delete(id):
     Cable.query.filter_by(id=id).delete()
+    CableJob.query.filter_by(cable_id=id).delete()
     db.session.commit()
 
     flash("Kabel verwijderd!", "success")
@@ -248,7 +251,7 @@ def cable_delete(id):
 @app.route("/connector/add", methods=['GET', 'POST'])
 @login_required
 def connector_add():
-    form = AddConnectorForm()
+    form = ConnectorForm()
 
     if form.validate_on_submit():
         connector = Connector(
@@ -271,7 +274,7 @@ def connector_add():
 @login_required
 def connector_edit(id):
     connector = Connector.query.get_or_404(id)
-    form = AddConnectorForm(obj=connector)
+    form = ConnectorForm(obj=connector)
     form.submit.label.text = "Werk bij"
 
     if form.validate_on_submit():
@@ -296,58 +299,62 @@ def connector_delete(id):
         db.session.commit()
 
         flash("Connector verwijderd!", "success")
-        return redirect("/")
     except:
         flash("Niet gelukt om de connector te verwijderen!", "danger")
+
+    return redirect("/")
 
 @app.route("/job/add", methods=['GET', 'POST'])
 @login_required
 def job_add():
-    form = AddJobForm()
-
-    if form.validate_on_submit():
-        job = Job(
-            name=form.name.data,
-            description=form.description.data,
-            start_date=form.start_date.data,
-            end_date=form.end_date.data,
-        )
-
-        try:
-            db.session.add(job)
-            db.session.commit()
-
-            flash("Klus toegevoegd!", "success")
-            return redirect("/")
-        except:
-            flash("Niet gelukt om een klus toe te voegen!", "danger")
-
-    return render_template("job.html", title="Voeg een klus toe", form=form)
+    return job_page()
 
 @app.route("/job/<int:id>/edit", methods=['GET', 'POST'])
 @login_required
 def job_edit(id):
     job = Job.query.get_or_404(id)
+    return job_page(job)
+
+def job_page(job: Job|None = None):
+    class JobFormWithCounts(JobForm):
+        pass
+
     equipment = Equipment.query.all()
-    equipment_jobs = EquipmentJob.query.filter_by(job_id=job.id).all()
+    cables = Cable.query.all()
+
+    equipment_jobs = EquipmentJob.query.filter_by(job_id=job.id).all() if job else []
     for e in equipment:
         value = next((ej.count for ej in equipment_jobs if ej.equipment_id == e.id), 0)
-        setattr(AddJobForm, f'count_{e.id}', IntegerField("Aantal", default=value, validators=[NumberRange(min=0, max=e.count)]))
+        setattr(JobFormWithCounts, f'e_count_{e.id}', IntegerField("Aantal", default=value, validators=[NumberRange(min=0, max=e.available_count())]))
 
-    form = AddJobForm(obj=job)
-    form.submit.label.text = "Werk bij"
+    cable_jobs = CableJob.query.filter_by(job_id=job.id).all() if job else []
+    for c in cables:
+        value = next((cj.count for cj in cable_jobs if cj.cable_id == c.id), 0)
+        setattr(JobFormWithCounts, f'c_count_{c.id}', IntegerField("Aantal", default=value, validators=[NumberRange(min=0, max=c.available_count())]))
+
+    form = JobFormWithCounts(obj=job)
+
+    if job:
+        form.submit.label.text = "Werk bij"
 
     if form.validate_on_submit():
-        job.name = form.name.data
-        job.description = form.description.data
-        job.start_date = form.start_date.data
-        job.end_date = form.end_date.data
-
-        equipment = Equipment.query.all()
+        if job:
+            job.name = form.name.data
+            job.description = form.description.data
+            job.start_date = form.start_date.data
+            job.end_date = form.end_date.data
+        else:
+            job = Job(
+                name=form.name.data,
+                description=form.description.data,
+                start_date=form.start_date.data,
+                end_date=form.end_date.data
+            )
+            db.session.add(job)
 
         try:
             for e in equipment:
-                count_attr = getattr(form, f'count_{e.id}')
+                count_attr = getattr(form, f'e_count_{e.id}')
                 count_value = count_attr.data if count_attr else 0
 
                 equipment_job = EquipmentJob.query.filter_by(job_id=job.id, equipment_id=e.id).first()
@@ -365,23 +372,48 @@ def job_edit(id):
                 elif equipment_job:
                     db.session.delete(equipment_job)
 
+            for c in cables:
+                count_attr = getattr(form, f'c_count_{c.id}')
+                count_value = count_attr.data if count_attr else 0
+
+                cable_job = CableJob.query.filter_by(job_id=job.id, cable_id=c.id).first()
+
+                if count_value > 0:
+                    if cable_job:
+                        cable_job.count = count_value
+                    else:
+                        new_cable_job = CableJob(
+                            job_id=job.id,
+                            cable_id=c.id,
+                            count=count_value
+                        )
+                        db.session.add(new_cable_job)
+                elif cable_job:
+                    db.session.delete(cable_job)
+
             db.session.commit()
 
             flash("Klus gewijzigd!", "success")
             return redirect("/")
+
         except:
             flash("Niet gelukt om de klus te wijzigen!", "danger")
 
-    return render_template("job.html", title="Bewerk de klus", form=form, job_id=id, equipment=equipment)
+    id = job.id if job else None
+    title = "Bewerk klus" if job else "Maak een nieuwe klus"
+    return render_template("job.html", title=title, form=form, job_id=id, equipment=equipment, cables=cables)
 
 @app.route("/job/<int:id>/delete")
 @login_required
 def job_delete(id):
     try:
         Job.query.filter_by(id=id).delete()
+        EquipmentJob.query.filter_by(job_id=id).delete()
+        CableJob.query.filter_by(job_id=id).delete()
         db.session.commit()
 
         flash("Klus verwijderd!", "success")
-        return redirect("/")
     except:
         flash("Niet gelukt om de klus te verwijderen!", "danger")
+
+    return redirect("/")

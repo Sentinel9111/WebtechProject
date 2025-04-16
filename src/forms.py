@@ -19,6 +19,10 @@ def validate_email(form, email):
     if user:
         raise ValidationError("Gebruik een ander email adres.")
 
+def validate_end_date(form, end_date):
+    if end_date.data < form.start_date.data:
+        raise ValidationError("Einddatum mag niet eerder zijn dan de startdatum.")
+
 class LoginForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("Wachtwoord", validators=[DataRequired()])
@@ -31,14 +35,14 @@ class RegistrationForm(FlaskForm):
     confirm_password = PasswordField("Bevestig wachtwoord", validators=[DataRequired(), EqualTo("password")])
     submit = SubmitField("Registreer")
 
-class AddEquipmentForm(FlaskForm):
+class EquipmentForm(FlaskForm):
     name = StringField("Naam", validators=[DataRequired(), Length(min=1, max=100)])
     brand = StringField("Merk", validators=[DataRequired(), Length(min=1, max=100)])
     category = SelectField("Categorie", validators=[DataRequired()])
-    count = IntegerField("Aantal", validators=[DataRequired(), NumberRange(min=1)])
+    count = IntegerField("Aantal", validators=[DataRequired(), NumberRange(min=2)])
     submit = SubmitField("Voeg toe")
 
-class AddCableForm(FlaskForm):
+class CableForm(FlaskForm):
     conn_a = SelectField("Connector A", validators=[DataRequired()])
     conn_b = SelectField("Connector B", validators=[DataRequired()])
     length = DecimalField("Lengte (m)", validators=[DataRequired(), NumberRange(min=0, max=1000)])
@@ -46,23 +50,18 @@ class AddCableForm(FlaskForm):
     count = IntegerField("Aantal", validators=[DataRequired(), NumberRange(min=1)])
     submit = SubmitField("Voeg toe")
 
-class AddCategoryForm(FlaskForm):
+class CategoryForm(FlaskForm):
     name = StringField("Naam", validators=[DataRequired(), Length(min=1, max=100)])
     submit = SubmitField("Voeg toe")
 
-class AddConnectorForm(FlaskForm):
+class ConnectorForm(FlaskForm):
     name = StringField("Naam", validators=[DataRequired(), Length(min=1, max=50)])
     is_male = BooleanField("Mannelijk", validators=[])
     submit = SubmitField("Voeg toe")
 
-class AddJobForm(FlaskForm):
+class JobForm(FlaskForm):
     name = StringField("Naam", validators=[DataRequired(), Length(min=1, max=50)])
     description = TextAreaField("Beschrijving", validators=[Length(max=5000)])
     start_date = DateField("Startdatum", validators=[DataRequired()])
-    end_date = DateField("Einddatum", validators=[DataRequired()])
-
+    end_date = DateField("Einddatum", validators=[DataRequired(), validate_end_date])
     submit = SubmitField("Voeg toe")
-
-    def validate_end_date(form, end_date):
-        if end_date.data < form.start_date.data:
-            raise ValidationError("Einddatum mag niet eerder zijn dan de startdatum.")
