@@ -1,0 +1,33 @@
+{% extends "base.html" %} {% block content %}
+<div class="mt-4 row justify-content-center">
+    <div class="col-md-6">
+        <h2 class="text-center">Voeg Job Toe</h2>
+
+        <form class="d-flex flex-column" style="gap: 1rem" method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+                {% for error in form.name.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+
+            <div class="form-group">
+                {{ form.description.label(class="form-label") }}
+                {{ form.description(class="form-control") }}
+                {% for error in form.description.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group mt-3">
+                {{ form.submit(class="btn btn-primary w-100") }}
+            </div>
+        </form>
+        {% if equipment_id %}
+            <a href="/job/{{job_id}}/delete" class="btn btn-danger">Delete</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
