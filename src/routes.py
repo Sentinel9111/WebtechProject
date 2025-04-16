@@ -87,7 +87,7 @@ def equipment_add():
         except:
             flash("Niet gelukt om equipment toe te voegen!", "danger")
 
-    return render_template("equipment/add-or-edit.html", title="Voeg Equipment Toe", form=form)
+    return render_template("equipment.html", title="Voeg Equipment Toe", form=form)
 
 @app.route('/equipment/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -111,12 +111,11 @@ def equipment_edit(id):
         except:
             flash("Niet gelukt om equipment bij te werken!", "danger")
 
-    return render_template("equipment/add-or-edit.html", title="Bewerk Equipment", form=form, equipment_id=id)
+    return render_template("equipment.html", title="Bewerk Equipment", form=form, equipment_id=id)
 
 @app.route("/equipment/<int:id>/delete")
 @login_required
 def equipment_delete(id):
-    equipment = Equipment.query.get_or_404(id)
     Equipment.query.filter_by(id=id).delete()
     db.session.commit()
 
@@ -142,7 +141,7 @@ def category_add():
         except:
             flash("Niet gelukt om categorie toe te voegen!", "danger")
 
-    return render_template("category/add-or-edit.html", title="Voeg Categorie Toe", form=form)
+    return render_template("category.html", title="Voeg Categorie Toe", form=form)
 
 @app.route("/category/<int:id>/edit", methods=['GET', 'POST'])
 @login_required
@@ -162,12 +161,11 @@ def category_edit(id):
         except:
             flash("Niet gelukt om categorie bij te werken!", "danger")
 
-    return render_template("category/add-or-edit.html", title="Bewerk Categorie", form=form, category_id=id)
+    return render_template("category.html", title="Bewerk Categorie", form=form, category_id=id)
 
 @app.route("/category/<int:id>/delete")
 @login_required
 def category_delete(id):
-    category = Category.query.get_or_404(id)
     Category.query.filter_by(id=id).delete()
     db.session.commit()
 
@@ -200,7 +198,7 @@ def cable_add():
         except:
             flash("Niet gelukt om kabel toe te voegen!", "danger")
 
-    return render_template("cable/add-or-edit.html", title="Voeg Kabel Toe", form=form)
+    return render_template("cable.html", title="Voeg Kabel Toe", form=form)
 
 @app.route("/cable/<int:id>/edit", methods=['GET', 'POST'])
 @login_required
@@ -227,12 +225,11 @@ def cable_edit(id):
         except:
             flash("Niet gelukt om kabel te wijzigen!", "danger")
 
-    return render_template("cable/add-or-edit.html", title="Werk bij Kabel", form=form, cable_id=id)
+    return render_template("cable.html", title="Werk bij Kabel", form=form, cable_id=id)
 
 @app.route("/cable/<int:id>/delete")
 @login_required
 def cable_delete(id):
-    cable = Cable.query.get_or_404(id)
     Cable.query.filter_by(id=id).delete()
     db.session.commit()
 
@@ -259,7 +256,7 @@ def connector_add():
         except:
             flash("Niet gelukt om connector toe te voegen!", "danger")
 
-    return render_template("connector/add-or-add.html", title="Voeg Connector Toe", form=form)
+    return render_template("connector.html", title="Voeg Connector Toe", form=form)
 
 @app.route("/connector/<int:id>/edit", methods=['GET', 'POST'])
 @login_required
@@ -280,13 +277,12 @@ def connector_edit(id):
         except:
             flash("Niet gelukt om connector te wijzigen!", "danger")
 
-    return render_template("connector/add-or-edit.html", title="Werk bij Connector", form=form, connector_id=id)
+    return render_template("connector.html", title="Werk bij Connector", form=form, connector_id=id)
 
 @app.route("/connector/<int:id>/delete")
 @login_required
 def connector_delete(id):
     try:
-        connector = Connector.query.get_or_404(id)
         Connector.query.filter_by(id=id).delete()
         db.session.commit()
 
