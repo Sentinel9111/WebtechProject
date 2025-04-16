@@ -12,12 +12,24 @@
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
-
-
             <div class="form-group">
                 {{ form.description.label(class="form-label") }}
                 {{ form.description(class="form-control") }}
                 {% for error in form.description.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.start_date.label(class="form-label") }}
+                {{ form.start_date(class="form-control") }}
+                {% for error in form.start_date.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.end_date.label(class="form-label") }}
+                {{ form.end_date(class="form-control") }}
+                {% for error in form.end_date.errors %}
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>

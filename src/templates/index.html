@@ -1,44 +1,87 @@
 {% extends "base.html" %} {% block head_includes %}
-<!-- JQuery (for Bootstrap Table) -->
-<script
-    src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-    crossorigin="anonymous"
-></script>
+    <!-- JQuery (for Bootstrap Table) -->
+    <script
+            src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"
+    ></script>
 
-<!-- Icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-<!-- Bootstrap Table -->
-<link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.css"
-/>
-<script
-    defer
-    src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.js"
-></script>
+    <!-- Bootstrap Table -->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.css"
+    />
+    <script
+            defer
+            src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.js"
+    ></script>
 {% endblock %} {% block content %}
-<h1>Inventaris</h1>
-<a class="btn btn-primary" href="/job/add" role="button">Steve Job</a>
-<section>
-    <h2>Equipment</h2>
-    <a class="btn btn-primary" href="/equipment/add" role="button">Voeg apparatuur toe.</a>
-    <table
-        data-toggle="table"
-        data-search="true"
-        data-show-columns="true"
-        data-toolbar="#toolbar"
-        data-search="true"
-        data-show-columns="true"
-        data-show-columns-toggle-all="true"
-        data-minimum-count-columns="2"
-        data-pagination="true"
-        data-id-field="id"
-        data-page-list="[10, 25, 50, 100, all]"
-        data-sortable="true"
-    >
-        <thead>
+    <h1>Inventaris</h1>
+    <section>
+        <h2>Equipment</h2>
+        <a class="btn btn-primary" href="/job/add" role="button">Steve Job</a>
+        <table
+                data-toggle="table"
+                data-search="true"
+                data-show-columns="true"
+                data-toolbar="#toolbar"
+                data-search="true"
+                data-show-columns="true"
+                data-show-columns-toggle-all="true"
+                data-minimum-count-columns="2"
+                data-pagination="true"
+                data-id-field="id"
+                data-page-list="[10, 25, 50, 100, all]"
+                data-sortable="true"
+        >
+            <thead>
+            <th data-field="name" data-custom-attribute="name" data-sortable="true">
+                Naam
+            </th>
+            <th data-field="description" data-custom-attribute="description">
+                Beschrijving
+            </th>
+            <th data-field="start_date" data-custom-attribute="description">
+                Startdatum
+            </th>
+            <th data-field="end_date" data-custom-attribute="description">
+                Einddatum
+            </th>
+            </thead>
+            <tbody>
+            {% for j in jobs %}
+                <tr id="{{ j.id }}" class="tr-class-1">
+                    <td data-text="{{ j.name }}">{{ j.name }}</td>
+                    <td data-text="{{ j.description }}">{{ j.description }}</td>
+                    <td data-text="{{ j.start_date }}">{{ j.start_date }}</td>
+                    <td data-text="{{ j.end_date }}">{{ j.end_date }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+    <section>
+        <h2>Equipment</h2>
+        <a class="btn btn-primary" href="/equipment/add" role="button">Voeg apparatuur toe.</a>
+        <table
+                data-toggle="table"
+                data-search="true"
+                data-show-columns="true"
+                data-toolbar="#toolbar"
+                data-search="true"
+                data-show-columns="true"
+                data-show-columns-toggle-all="true"
+                data-minimum-count-columns="2"
+                data-pagination="true"
+                data-id-field="id"
+                data-page-list="[10, 25, 50, 100, all]"
+                data-sortable="true"
+        >
+            <thead>
             <th data-width="1rem" data-field="count" data-custom-attribute="count" data-sortable="true">
                 Aantal
             </th>
@@ -51,38 +94,38 @@
             <th data-field="category" data-custom-attribute="category" data-sortable="true">
                 Category
             </th>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             {% for e in equipment %}
-            <tr id="{{ e.id }}" class="tr-class-1">
-                <td data-value="{{ e.count }}">{{ e.count }}</td>
-                <td data-text="{{ e.brand }}">{{ e.brand }}</td>
-                <td data-text="{{ e.name }}">{{ e.name }}</td>
-                <td data-text="{{ e.category.name }}">{{ e.category.name }}</td>
-            </tr>
+                <tr id="{{ e.id }}" class="tr-class-1">
+                    <td data-value="{{ e.count }}">{{ e.count }}</td>
+                    <td data-text="{{ e.brand }}">{{ e.brand }}</td>
+                    <td data-text="{{ e.name }}">{{ e.name }}</td>
+                    <td data-text="{{ e.category.name }}">{{ e.category.name }}</td>
+                </tr>
             {% endfor %}
-        </tbody>
-    </table>
-</section>
+            </tbody>
+        </table>
+    </section>
 
-<section>
-    <h2>Kabels</h2>
-    <a class="btn btn-primary" href="/cable/add" role="button">Voeg een kabel toe.</a>
-    <table
-        data-toggle="table"
-        data-search="true"
-        data-show-columns="true"
-        data-toolbar="#toolbar"
-        data-search="true"
-        data-show-columns="true"
-        data-show-columns-toggle-all="true"
-        data-minimum-count-columns="2"
-        data-pagination="true"
-        data-id-field="id"
-        data-page-list="[10, 25, 50, 100, all]"
-        data-sortable="true"
-    >
-        <thead>
+    <section>
+        <h2>Kabels</h2>
+        <a class="btn btn-primary" href="/cable/add" role="button">Voeg een kabel toe.</a>
+        <table
+                data-toggle="table"
+                data-search="true"
+                data-show-columns="true"
+                data-toolbar="#toolbar"
+                data-search="true"
+                data-show-columns="true"
+                data-show-columns-toggle-all="true"
+                data-minimum-count-columns="2"
+                data-pagination="true"
+                data-id-field="id"
+                data-page-list="[10, 25, 50, 100, all]"
+                data-sortable="true"
+        >
+            <thead>
             <th data-field="count" data-custom-attribute="count" data-sortable="true">
                 Aantal
             </th>
@@ -98,18 +141,18 @@
             <th data-field="category" data-custom-attribute="category" data-sortable="true">
                 Category
             </th>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             {% for c in cables %}
-            <tr id="{{ c.id }}" class="tr-class-1">
-                <td data-value="{{ c.count }}">{{ c.count }}</td>
-                <td data-value="{{ c.conn_a_id }}">{{ c.conn_a.name }} ({{ c.conn_a.gender_label() }})</td>
-                <td data-value="{{ c.conn_b_id }}">{{ c.conn_b.name }} ({{ c.conn_b.gender_label() }})</td>
-                <td data-value="{{ c.length }}">{{ c.length }}</td>
-                <td data-text="{{ c.category.name }}">{{ c.category.name }}</td>
-            </tr>
+                <tr id="{{ c.id }}" class="tr-class-1">
+                    <td data-value="{{ c.count }}">{{ c.count }}</td>
+                    <td data-value="{{ c.conn_a_id }}">{{ c.conn_a.name }} ({{ c.conn_a.gender_label() }})</td>
+                    <td data-value="{{ c.conn_b_id }}">{{ c.conn_b.name }} ({{ c.conn_b.gender_label() }})</td>
+                    <td data-value="{{ c.length }}">{{ c.length }}</td>
+                    <td data-text="{{ c.category.name }}">{{ c.category.name }}</td>
+                </tr>
             {% endfor %}
-        </tbody>
-    </table>
-</section>
+            </tbody>
+        </table>
+    </section>
 {% endblock %}
