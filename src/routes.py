@@ -323,13 +323,13 @@ def job_edit(id):
     form = AddJobForm(obj=job)
     form.submit.label.text = "Werk bij"
 
+    equipment = Equipment.query.all()
+
     if form.validate_on_submit():
-        job.name = form.name.data,
-        job.description = form.description.data,
-        # job.start_date = form.start_date.data,
-        # job.end_date = form.end_date.data,
-        print(job.start_date)
-        print(form.start_date.data)
+        job.name = form.name.data
+        job.description = form.description.data
+        job.start_date = form.start_date.data
+        job.end_date = form.end_date.data
         try:
             db.session.commit()
 
@@ -338,7 +338,7 @@ def job_edit(id):
         except:
             flash("Niet gelukt om job te wijzigen!", "danger")
 
-    return render_template("job.html", title="Bewerk Job", form=form, job_id=id)
+    return render_template("job.html", title="Bewerk Job", form=form, job_id=id, equipment=equipment)
 
 @app.route("/job/<int:id>/delete")
 @login_required

@@ -1,4 +1,25 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% block head_includes %}
+    <!-- JQuery (for Bootstrap Table) -->
+    <script
+            src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"
+    ></script>
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <!-- Bootstrap Table -->
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.css"
+    />
+    <script
+            defer
+            src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.js"
+    ></script>
+{% endblock %} {% block content %}
 <div class="mt-4 row justify-content-center">
     <div class="col-md-6">
         <h2 class="text-center">Voeg Job Toe</h2>
@@ -33,6 +54,49 @@
                     <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
+        <section>
+        <h2>Equipment</h2>
+        <table
+                data-toggle="table"
+                data-search="true"
+                data-show-columns="true"
+                data-toolbar="#toolbar"
+                data-search="true"
+                data-show-columns="true"
+                data-show-columns-toggle-all="true"
+                data-minimum-count-columns="2"
+                data-pagination="true"
+                data-id-field="id"
+                data-page-list="[10, 25, 50, 100, all]"
+                data-sortable="true"
+        >
+            <thead>
+            <th data-width="1rem" data-field="count" data-custom-attribute="count" data-sortable="true">
+                Aantal
+            </th>
+            <th data-field="brand" data-custom-attribute="brand" data-sortable="true">
+                Merk
+            </th>
+            <th data-field="name" data-custom-attribute="name" data-sortable="true">
+                Naam
+            </th>
+            <th data-field="category" data-custom-attribute="category" data-sortable="true">
+                Category
+            </th>
+            </thead>
+            <tbody>
+            {% for e in equipment %}
+                <tr id="{{ e.id }}" class="tr-class-1">
+                    <td data-value="{{ e.count }}">{{ e.count }}</td>
+                    <td data-text="{{ e.brand }}">{{ e.brand }}</td>
+                    <td data-text="{{ e.name }}">{{ e.name }}</td>
+                    <td data-text="{{ e.category.name }}">{{ e.category.name }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
             <div class="form-group mt-3">
                 {{ form.submit(class="btn btn-primary w-100") }}
             </div>
