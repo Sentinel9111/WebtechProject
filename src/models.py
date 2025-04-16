@@ -1,6 +1,6 @@
 from app import db, login_manager
-
 from flask_login import UserMixin
+import datetime
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -23,14 +23,18 @@ class User(db.Model, UserMixin):
 class Job(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(200), nullable=True)
+    description = db.Column(db.String(5000), nullable=True)
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
 
-    def __init__(self, name, description):
+    def __init__(self, name, description, start_date, end_date):
         self.name = name
         self.description = description
+        self.start_date = start_date
+        self.end_date = end_date
 
     def __repr__(self):
-        return f"Job('{self.id}', '{self.name}', '{self.description}')"
+        return f"Job('{self.id}', '{self.name}', '{self.description}', '{self.start_date}', '{self.end_date}')"
 
 class UserJob(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True, nullable=False)

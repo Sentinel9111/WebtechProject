@@ -1,6 +1,6 @@
 from app import app, db, bcrypt
-from forms import AddEquipmentForm, AddCategoryForm, AddCableForm, AddConnectorForm, RegistrationForm, LoginForm
-from models import Equipment, User, Cable, Category, Connector
+from forms import AddEquipmentForm, AddCategoryForm, AddCableForm, AddConnectorForm, RegistrationForm, LoginForm, AddJobForm
+from models import Equipment, User, Cable, Category, Connector, Job
 
 from flask import render_template, flash, redirect
 from flask_login import login_user, current_user, logout_user, login_required
@@ -8,9 +8,10 @@ from flask_login import login_user, current_user, logout_user, login_required
 @app.route("/")
 @login_required
 def index():
+    jobs = Job.query.all()
     cables = Cable.query.all()
     equipment = Equipment.query.all()
-    return render_template('index.html', title="Inventaris", equipment=equipment, cables=cables)
+    return render_template('index.html', title="Inventaris", equipment=equipment, cables=cables, jobs=jobs)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -290,3 +291,65 @@ def connector_delete(id):
         return redirect("/")
     except:
         flash("Niet gelukt om connector te verwijderen!", "danger")
+
+@app.route("/job/add", methods=['GET', 'POST'])
+@login_required
+def job_add():
+    form = AddJobForm()
+
+    if form.validate_on_submit():
+        job = Job(
+            name=form.name.data,
+            description=form.description.data,
+            start_date=form.start_date.data,
+            end_date=form.end_date.data,
+        )
+
+        try:
+            db.session.add(job)
+            db.session.commit()
+
+            flash("Klus toegevoegd!", "success")
+            return redirect("/")
+        except:
+            flash("Niet gelukt om klus toe te voegen!", "danger")
+
+    return render_template("job.html", title="Voeg Klus Toe", form=form)
+
+@app.route("/job/<int:id>/edit", methods=['GET', 'POST'])
+@login_required
+def job_edit(id):
+    job = Job.query.get_or_404(id)
+    form = AddJobForm(obj=job)
+    form.submit.label.text = "Werk bij"
+
+    if form.validate_on_submit():
+        job.name = form.name.data,
+        job.description = form.description.data,
+        # job.start_date = form.start_date.data,
+        # job.end_date = form.end_date.data,
+        print(job.start_date)
+        print(form.start_date.data)
+        try:
+            db.session.commit()
+
+            flash("Job gewijzigd!", "success")
+            return redirect("/")
+        except:
+            flash("Niet gelukt om job te wijzigen!", "danger")
+
+    return render_template("job.html", title="Bewerk Job", form=form, job_id=id)
+
+@app.route("/job/<int:id>/delete")
+@login_required
+def job_delete(id):
+    try:
+        Job.query.filter_by(id=id).delete()
+        db.session.commit()
+
+        flash("job verwijderd!", "success")
+        return redirect("/")
+    except:
+        flash("Niet gelukt om job te verwijderen!", "danger")
+
+
