@@ -70,6 +70,7 @@ class Cable(db.Model):
     conn_b_id = db.Column(db.Integer, db.ForeignKey('connector.id'), nullable=False)
     conn_b = db.relationship('Connector', foreign_keys=[conn_b_id])
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
+    category = db.relationship('Category', foreign_keys=[category_id])
     count = db.Column(db.Integer, nullable=False)
 
     def __init__(self, conn_a_id, conn_b_id, category_id, length, count):
