@@ -1,170 +1,245 @@
 {% extends "base.html" %} {% block head_includes %}
-    <!-- JQuery (for Bootstrap Table) -->
-    <script
-            src="https://code.jquery.com/jquery-3.7.1.min.js"
-            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-            crossorigin="anonymous"
-    ></script>
+<!-- JQuery (for Bootstrap Table) -->
+<script
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+    crossorigin="anonymous"
+></script>
 
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<!-- Icons -->
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+/>
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+/>
 
-    <!-- Bootstrap Table -->
-    <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.css"
-    />
-    <script
-            defer
-            src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.js"
-    ></script>
+<!-- Bootstrap Table -->
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.css"
+/>
+<script
+    defer
+    src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.js"
+></script>
 {% endblock %} {% block content %}
-    <h1>Inventaris</h1>
-    <section>
-        <h2>Klussen</h2>
-        <a class="btn btn-primary" href="/job/add" role="button">Voeg een klus toe</a>
-        <table
-                data-toggle="table"
-                data-search="true"
-                data-show-columns="true"
-                data-toolbar="#toolbar"
-                data-search="true"
-                data-show-columns="true"
-                data-show-columns-toggle-all="true"
-                data-minimum-count-columns="2"
-                data-pagination="true"
-                data-id-field="id"
-                data-page-list="[10, 25, 50, 100, all]"
+<h1>Inventaris</h1>
+<section>
+    <h2>Klussen</h2>
+    <a class="btn btn-primary" href="/job/add" role="button"
+        >Voeg een klus toe</a
+    >
+    <table
+        data-toggle="table"
+        data-search="true"
+        data-show-columns="true"
+        data-toolbar="#toolbar"
+        data-search="true"
+        data-show-columns="true"
+        data-show-columns-toggle-all="true"
+        data-minimum-count-columns="2"
+        data-pagination="true"
+        data-id-field="id"
+        data-page-list="[10, 25, 50, 100, all]"
+        data-sortable="true"
+    >
+        <thead>
+            <th
+                data-field="name"
+                data-custom-attribute="name"
                 data-sortable="true"
-        >
-            <thead>
-            <th data-field="name" data-custom-attribute="name" data-sortable="true">
+            >
                 Naam
             </th>
             <th data-field="description" data-custom-attribute="description">
                 Beschrijving
             </th>
-            <th data-field="start_date" data-custom-attribute="start_date" data-sortable="true">
+            <th
+                data-field="start_date"
+                data-custom-attribute="start_date"
+                data-sortable="true"
+            >
                 Startdatum
             </th>
-            <th data-field="end_date" data-custom-attribute="end_date" data-sortable="true">
+            <th
+                data-field="end_date"
+                data-custom-attribute="end_date"
+                data-sortable="true"
+            >
                 Einddatum
             </th>
-            <th data-field="action" data-custom-attribute="action">
-                Actie
-            </th>
-            </thead>
-            <tbody>
+            <th data-field="action" data-custom-attribute="action">Actie</th>
+        </thead>
+        <tbody>
             {% for j in jobs %}
-                <tr id="{{ j.id }}" class="tr-class-1">
-                    <td data-text="{{ j.name }}">{{ j.name }}</td>
-                    <td data-text="{{ j.description }}">{{ j.description }}</td>
-                    <td data-text="{{ j.start_date }}">{{ j.start_date }}</td>
-                    <td data-text="{{ j.end_date }}">{{ j.end_date }}</td>
-                    <td><a href="job/{{ j.id }}/edit">Bewerken</a></td>
-                </tr>
+            <tr id="{{ j.id }}" class="tr-class-1">
+                <td data-text="{{ j.name }}">{{ j.name }}</td>
+                <td data-text="{{ j.description }}">{{ j.description }}</td>
+                <td data-text="{{ j.start_date }}">{{ j.start_date }}</td>
+                <td data-text="{{ j.end_date }}">{{ j.end_date }}</td>
+                <td><a href="job/{{ j.id }}/edit">Bewerken</a></td>
+            </tr>
             {% endfor %}
-            </tbody>
-        </table>
-    </section>
-    <section>
-        <h2>Apparatuur</h2>
-        <a class="btn btn-primary" href="/equipment/add" role="button">Voeg apparatuur toe</a>
-        <table
-                data-toggle="table"
-                data-search="true"
-                data-show-columns="true"
-                data-toolbar="#toolbar"
-                data-search="true"
-                data-show-columns="true"
-                data-show-columns-toggle-all="true"
-                data-minimum-count-columns="2"
-                data-pagination="true"
-                data-id-field="id"
-                data-page-list="[10, 25, 50, 100, all]"
+        </tbody>
+    </table>
+</section>
+<section>
+    <h2>Apparatuur</h2>
+    <a class="btn btn-primary" href="/equipment/add" role="button"
+        >Voeg apparatuur toe</a
+    >
+    <table
+        data-toggle="table"
+        data-search="true"
+        data-show-columns="true"
+        data-toolbar="#toolbar"
+        data-search="true"
+        data-show-columns="true"
+        data-show-columns-toggle-all="true"
+        data-minimum-count-columns="2"
+        data-pagination="true"
+        data-id-field="id"
+        data-page-list="[10, 25, 50, 100, all]"
+        data-sortable="true"
+    >
+        <thead>
+            <th
+                data-width="1rem"
+                data-field="count"
+                data-custom-attribute="count"
                 data-sortable="true"
-        >
-            <thead>
-            <th data-width="1rem" data-field="count" data-custom-attribute="count" data-sortable="true">
-                Aantal
+            >
+                Beschikbaar
             </th>
-            <th data-field="brand" data-custom-attribute="brand" data-sortable="true">
+            <th
+                data-field="brand"
+                data-custom-attribute="brand"
+                data-sortable="true"
+            >
                 Merk
             </th>
-            <th data-field="name" data-custom-attribute="name" data-sortable="true">
+            <th
+                data-field="name"
+                data-custom-attribute="name"
+                data-sortable="true"
+            >
                 Naam
             </th>
-            <th data-field="category" data-custom-attribute="category" data-sortable="true">
+            <th
+                data-field="category"
+                data-custom-attribute="category"
+                data-sortable="true"
+            >
                 Categorie
             </th>
-            <th data-field="action" data-custom-attribute="action">
-                Actie
-            </th>
-            </thead>
-            <tbody>
+            <th data-field="action" data-custom-attribute="action">Actie</th>
+        </thead>
+        <tbody>
             {% for e in equipment %}
-                <tr id="{{ e.id }}" class="tr-class-1">
-                    <td data-value="{{ e.count }}">{{ e.count }}</td>
-                    <td data-text="{{ e.brand }}">{{ e.brand }}</td>
-                    <td data-text="{{ e.name }}">{{ e.name }}</td>
-                    <td data-text="{{ e.category.name }}">{{ e.category.name }}</td>
-                    <td><a href="equipment/{{ e.id }}/edit">Bewerken</a></td>
-                </tr>
+            <tr id="{{ e.id }}" class="tr-class-1">
+                <td>
+                    <span
+                        class="{{ 'text-danger fw-bold' if e.available_count() == 0 else '' }}"
+                    >
+                        {{ e.available_count() }}
+                    </span>
+                    /
+                    <span> {{ e.count }} </span>
+                </td>
+                <td data-text="{{ e.brand }}">{{ e.brand }}</td>
+                <td data-text="{{ e.name }}">{{ e.name }}</td>
+                <td data-text="{{ e.category.name }}">{{ e.category.name }}</td>
+                <td><a href="equipment/{{ e.id }}/edit">Bewerken</a></td>
+            </tr>
             {% endfor %}
-            </tbody>
-        </table>
-    </section>
+        </tbody>
+    </table>
+</section>
 
-    <section>
-        <h2>Kabels</h2>
-        <a class="btn btn-primary" href="/cable/add" role="button">Voeg een kabel toe</a>
-        <table
-                data-toggle="table"
-                data-search="true"
-                data-show-columns="true"
-                data-toolbar="#toolbar"
-                data-search="true"
-                data-show-columns="true"
-                data-show-columns-toggle-all="true"
-                data-minimum-count-columns="2"
-                data-pagination="true"
-                data-id-field="id"
-                data-page-list="[10, 25, 50, 100, all]"
+<section>
+    <h2>Kabels</h2>
+    <a class="btn btn-primary" href="/cable/add" role="button"
+        >Voeg een kabel toe</a
+    >
+    <table
+        data-toggle="table"
+        data-search="true"
+        data-show-columns="true"
+        data-toolbar="#toolbar"
+        data-search="true"
+        data-show-columns="true"
+        data-show-columns-toggle-all="true"
+        data-minimum-count-columns="2"
+        data-pagination="true"
+        data-id-field="id"
+        data-page-list="[10, 25, 50, 100, all]"
+        data-sortable="true"
+    >
+        <thead>
+            <th
+                data-field="count"
+                data-custom-attribute="count"
                 data-sortable="true"
-        >
-            <thead>
-            <th data-field="count" data-custom-attribute="count" data-sortable="true">
-                Aantal
+            >
+                Beschikbaar
             </th>
-            <th data-field="conn-a" data-custom-attribute="conn_a" data-sortable="true">
+            <th
+                data-field="conn-a"
+                data-custom-attribute="conn_a"
+                data-sortable="true"
+            >
                 Connector A
             </th>
-            <th data-field="conn-b" data-custom-attribute="conn_b" data-sortable="true">
+            <th
+                data-field="conn-b"
+                data-custom-attribute="conn_b"
+                data-sortable="true"
+            >
                 Connector B
             </th>
-            <th data-field="length" data-custom-attribute="length" data-sortable="true">
+            <th
+                data-field="length"
+                data-custom-attribute="length"
+                data-sortable="true"
+            >
                 Lengte (m)
             </th>
-            <th data-field="category" data-custom-attribute="category" data-sortable="true">
+            <th
+                data-field="category"
+                data-custom-attribute="category"
+                data-sortable="true"
+            >
                 Categorie
             </th>
-            <th data-field="action" data-custom-attribute="action">
-                Actie
-            </th>
-            </thead>
-            <tbody>
+            <th data-field="action" data-custom-attribute="action">Actie</th>
+        </thead>
+        <tbody>
             {% for c in cables %}
-                <tr id="{{ c.id }}" class="tr-class-1">
-                    <td data-value="{{ c.count }}">{{ c.count }}</td>
-                    <td data-value="{{ c.conn_a_id }}">{{ c.conn_a.name }} ({{ c.conn_a.gender_label() }})</td>
-                    <td data-value="{{ c.conn_b_id }}">{{ c.conn_b.name }} ({{ c.conn_b.gender_label() }})</td>
-                    <td data-value="{{ c.length }}">{{ c.length }}</td>
-                    <td data-text="{{ c.category.name }}">{{ c.category.name }}</td>
-                    <td><a href="cable/{{ c.id }}/edit">Bewerken</a></td>
-                </tr>
+            <tr id="{{ c.id }}" class="tr-class-1">
+                <td>
+                    <span
+                        class="{{ 'text-danger fw-bold' if c.available_count() == 0 else '' }}"
+                    >
+                        {{ c.available_count() }}
+                    </span>
+                    /
+                    <span> {{ c.count }} </span>
+                </td>
+                <td data-value="{{ c.conn_a_id }}">
+                    {{ c.conn_a.name }} ({{ c.conn_a.gender_label() }})
+                </td>
+                <td data-value="{{ c.conn_b_id }}">
+                    {{ c.conn_b.name }} ({{ c.conn_b.gender_label() }})
+                </td>
+                <td data-value="{{ c.length }}">{{ c.length }}</td>
+                <td data-text="{{ c.category.name }}">{{ c.category.name }}</td>
+                <td><a href="cable/{{ c.id }}/edit">Bewerken</a></td>
+            </tr>
             {% endfor %}
-            </tbody>
-        </table>
-    </section>
+        </tbody>
+    </table>
+</section>
 {% endblock %}

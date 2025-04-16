@@ -126,6 +126,7 @@ def equipment_edit(id):
 @login_required
 def equipment_delete(id):
     Equipment.query.filter_by(id=id).delete()
+    EquipmentJob.query.filter_by(equipment_id=id).delete()
     db.session.commit()
 
     flash("Apparatuur verwijderd!", "success")
@@ -241,6 +242,7 @@ def cable_edit(id):
 @login_required
 def cable_delete(id):
     Cable.query.filter_by(id=id).delete()
+    CableJob.query.filter_by(cable_id=id).delete()
     db.session.commit()
 
     flash("Kabel verwijderd!", "success")
@@ -323,12 +325,12 @@ def job_page(job: Job|None = None):
     equipment_jobs = EquipmentJob.query.filter_by(job_id=job.id).all() if job else []
     for e in equipment:
         value = next((ej.count for ej in equipment_jobs if ej.equipment_id == e.id), 0)
-        setattr(JobFormWithCounts, f'e_count_{e.id}', IntegerField("Aantal", default=value, validators=[NumberRange(min=0, max=e.count)]))
+        setattr(JobFormWithCounts, f'e_count_{e.id}', IntegerField("Aantal", default=value, validators=[NumberRange(min=0, max=e.available_count())]))
 
     cable_jobs = CableJob.query.filter_by(job_id=job.id).all() if job else []
     for c in cables:
         value = next((cj.count for cj in cable_jobs if cj.cable_id == c.id), 0)
-        setattr(JobFormWithCounts, f'c_count_{c.id}', IntegerField("Aantal", default=value, validators=[NumberRange(min=0, max=c.count)]))
+        setattr(JobFormWithCounts, f'c_count_{c.id}', IntegerField("Aantal", default=value, validators=[NumberRange(min=0, max=c.available_count())]))
 
     form = JobFormWithCounts(obj=job)
 
@@ -406,6 +408,8 @@ def job_page(job: Job|None = None):
 def job_delete(id):
     try:
         Job.query.filter_by(id=id).delete()
+        EquipmentJob.query.filter_by(job_id=id).delete()
+        CableJob.query.filter_by(job_id=id).delete()
         db.session.commit()
 
         flash("Klus verwijderd!", "success")

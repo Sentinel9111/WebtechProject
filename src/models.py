@@ -43,6 +43,7 @@ class Equipment(db.Model):
     category = db.relationship('Category', foreign_keys=[category_id])
     count = db.Column(db.Integer, nullable=False)
 
+
     def __init__(self, name, brand, category_id, count):
         self.name = name
         self.brand = brand
@@ -51,6 +52,14 @@ class Equipment(db.Model):
 
     def __repr__(self):
         return f"Equipment('{self.id}', '{self.name}', '{self.brand}', '{self.category_id}', '{self.count}')"
+
+    def available_count(self):
+        linked_equipment_jobs = db.session.query(EquipmentJob).filter_by(equipment_id=self.id).all()
+        used = 0
+        for ej in linked_equipment_jobs:
+            used += ej.count
+        return self.count - used
+
 
 class Cable(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -73,6 +82,13 @@ class Cable(db.Model):
     def __repr__(self):
         return f"Cable('{self.id}', '{self.conn_a_id}', '{self.conn_b_id}', '{self.category_id}', {self.length}, {self.count})"
 
+    def available_count(self):
+        linked_cable_jobs = db.session.query(CableJob).filter_by(cable_id=self.id).all()
+        used = 0
+        for cj in linked_cable_jobs:
+            used += cj.count
+        return self.count - used
+
 class EquipmentJob(db.Model):
     equipment_id = db.Column(db.Integer, db.ForeignKey('equipment.id'), primary_key=True, nullable=False)
     equipment = db.relationship('Equipment', foreign_keys=[equipment_id])
@@ -86,7 +102,7 @@ class EquipmentJob(db.Model):
         self.count = count
 
     def __repr__(self):
-        return f"EquipmentJob('{self.equipment_id}', '{self.job_id}')"
+        return f"EquipmentJob('{self.equipment_id}', '{self.job_id}', '{self.count}')"
 
 class CableJob(db.Model):
     cable_id = db.Column(db.Integer, db.ForeignKey('cable.id'), primary_key=True, nullable=False)

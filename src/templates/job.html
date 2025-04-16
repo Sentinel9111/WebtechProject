@@ -101,7 +101,7 @@
                                 data-custom-attribute="total"
                                 data-sortable="true"
                             >
-                                Totaal
+                                Beschikbaar
                             </th>
                             <th
                                 data-field="brand"
@@ -129,7 +129,13 @@
                             {% for e in equipment %}
                             <tr id="{{ e.id }}" class="tr-class-1">
                                 <td>{{ form['e_count_' ~ e.id](class_='form-control') }}</td>
-                                <td data-value="{{ e.count }}">{{ e.count }}</td>
+                                <td data-value="{{ e.count }}">
+                                    <span class="{{ 'text-danger fw-bold' if e.available_count() == 0 else '' }}">
+                                        {{ e.available_count() }}
+                                    </span>
+                                    /
+                                    <span>{{ e.count }}</span>
+                                </td>
                                 <td data-text="{{ e.brand }}">{{ e.brand }}</td>
                                 <td data-text="{{ e.name }}">{{ e.name }}</td>
                                 <td data-text="{{ e.category.name }}">{{ e.category.name }}</td>
@@ -169,7 +175,7 @@
                                 data-custom-attribute="total"
                                 data-sortable="true"
                             >
-                                Totaal
+                                Beschikbaar
                             </th>
                             <th
                                 data-field="conn_a"
@@ -204,7 +210,13 @@
                             {% for c in cables %}
                             <tr id="{{ c.id }}" class="tr-class-1">
                                 <td>{{ form['c_count_' ~ c.id](class_='form-control') }}</td>
-                                <td data-value="{{ c.count }}">{{ c.count }}</td>
+                                <td>
+                                    <span class="{{ 'text-danger fw-bold' if c.available_count() == 0 else '' }}">
+                                        {{ c.available_count() }}
+                                    </span>
+                                    /
+                                    <span>{{ c.count }}</span>
+                                </td>
                                 <td data-text="{{ c.conn_a }}">{{ c.conn_a.name }} ({{ c.conn_a.gender_label() }})</td>
                                 <td data-text="{{ c.conn_b }}">{{ c.conn_b.name }} ({{ c.conn_b.gender_label() }})</td>
                                 <td data-text="{{ c.length }}">{{ c.length }}</td>

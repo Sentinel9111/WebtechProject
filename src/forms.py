@@ -39,7 +39,7 @@ class EquipmentForm(FlaskForm):
     name = StringField("Naam", validators=[DataRequired(), Length(min=1, max=100)])
     brand = StringField("Merk", validators=[DataRequired(), Length(min=1, max=100)])
     category = SelectField("Categorie", validators=[DataRequired()])
-    count = IntegerField("Aantal", validators=[DataRequired(), NumberRange(min=1)])
+    count = IntegerField("Aantal", validators=[DataRequired(), NumberRange(min=2)])
     submit = SubmitField("Voeg toe")
 
 class CableForm(FlaskForm):
