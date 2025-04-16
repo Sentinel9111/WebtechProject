@@ -225,7 +225,7 @@ def cable_edit(id):
         except:
             flash("Niet gelukt om kabel te wijzigen!", "danger")
 
-    return render_template("cable.html", title="Werk bij Kabel", form=form, cable_id=id)
+    return render_template("cable.html", title="Bewerk Kabel", form=form, cable_id=id)
 
 @app.route("/cable/<int:id>/delete")
 @login_required
@@ -277,7 +277,7 @@ def connector_edit(id):
         except:
             flash("Niet gelukt om connector te wijzigen!", "danger")
 
-    return render_template("connector.html", title="Werk bij Connector", form=form, connector_id=id)
+    return render_template("connector.html", title="Bewerk Connector", form=form, connector_id=id)
 
 @app.route("/connector/<int:id>/delete")
 @login_required

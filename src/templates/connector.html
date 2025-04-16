@@ -22,7 +22,9 @@
         <div class="form-group mt-3">
             {{ form.submit(class="btn btn-primary w-100") }}
         </div>
-        <a href="/connector/{{connector_id}}/delete" class="btn btn-danger">Delete</a>
+        {% if connector_id %}
+            <a href="/connector/{{connector_id}}/delete" class="btn btn-danger">Delete</a>
+        {% endif %}
     </form>
   </div>
 </div>
