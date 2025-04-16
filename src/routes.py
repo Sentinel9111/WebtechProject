@@ -13,6 +13,11 @@ def index():
     equipment = Equipment.query.all()
     return render_template('index.html', title="Inventaris", equipment=equipment, cables=cables, jobs=jobs)
 
+@app.errorhandler(Exception)
+def handle_error(e):
+    code = getattr(e, 'code', 500)
+    return render_template("error.html", code=code, message=str(e)), code
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
