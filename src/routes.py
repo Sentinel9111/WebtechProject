@@ -1,15 +1,16 @@
 from app import app, db, bcrypt
+from forms import AddEquipmentForm, AddCategoryForm, AddCableForm, AddConnectorForm, RegistrationForm, LoginForm
+from models import Equipment, User, Cable, Category, Connector
+
 from flask import render_template, flash, redirect
-from forms import RegistrationForm, LoginForm
-from models import Equipment, User
 from flask_login import login_user, current_user, logout_user, login_required
-from models import Cable
-from forms import AddEquipmentForm, AddCableForm
 
 @app.route("/")
-
+@login_required
 def index():
-    return render_template("index.html", title="Inventarissysteem")
+    cables = Cable.query.all()
+    equipment = Equipment.query.all()
+    return render_template('index.html', title="Inventaris", equipment=equipment, cables=cables)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -55,55 +56,137 @@ def login():
 @app.route("/logout")
 @login_required
 def logout():
-    logout_user();
-    return redirect("/");
+    logout_user()
+    return redirect("/")
 
 @app.route("/account")
 @login_required
 def account():
     return render_template('account.html', title="Account")
 
-@app.route("/inventory")
-@login_required
-def inventory():
-    cables = Cable.query.all()
-    equipment = Equipment.query.all()
-    return render_template('inventory.html', title="Inventaris", equipment=equipment, cables=cables)
-
-@app.route("/equipment/add")
+@app.route("/equipment/add", methods=['GET', 'POST'])
 @login_required
 def equipment_add():
     form = AddEquipmentForm()
+    form.category.choices = [(category.id, category.name) for category in Category.query.all()]
+
     if form.validate_on_submit():
         equipment = Equipment(
             name=form.name.data,
             brand=form.brand.data,
-            category=form.category.data
+            category_id=form.category.data,
+            count=form.count.data
         )
 
         try:
             db.session.add(equipment)
             db.session.commit()
 
-            flash("Apparatuur toegevoegd!", "success")
-            return redirect("/inventory")
+            flash("Equipment toegevoegd!", "success")
+            return redirect("/")
         except:
-            flash("Niet gelukt om apparatuur toe te voegen!", "danger")
+            flash("Niet gelukt om equipment toe te voegen!", "danger")
 
-    return render_template("equipment/add.html", title="Voeg Equipment Toe", form=form)
+    return render_template("equipment.html", title="Voeg Equipment Toe", form=form)
 
-@app.route("/cable/add")
+@app.route('/equipment/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
+def equipment_edit(id):
+    equipment = Equipment.query.get_or_404(id)
+    form = AddEquipmentForm(obj=equipment)
+    form.category.choices = [(category.id, category.name) for category in Category.query.all()]
+    form.submit.label.text = "Werk bij"
+
+    if form.validate_on_submit():
+        equipment.name = form.name.data
+        equipment.brand = form.brand.data
+        equipment.category_id = form.category.data
+        equipment.count = form.count.data
+
+        try:
+            db.session.commit()
+
+            flash("Equipment bijgewerkt!", "success")
+            return redirect("/")
+        except:
+            flash("Niet gelukt om equipment bij te werken!", "danger")
+
+    return render_template("equipment.html", title="Bewerk Equipment", form=form, equipment_id=id)
+
+@app.route("/equipment/<int:id>/delete")
+@login_required
+def equipment_delete(id):
+    Equipment.query.filter_by(id=id).delete()
+    db.session.commit()
+
+    flash("Equipment verwijderd!", "success")
+    return redirect("/")
+
+@app.route("/category/add", methods=['GET', 'POST'])
+@login_required
+def category_add():
+    form = AddCategoryForm()
+
+    if form.validate_on_submit():
+        category = Category(
+            name=form.name.data,
+        )
+
+        try:
+            db.session.add(category)
+            db.session.commit()
+
+            flash("Categorie toegevoegd!", "success")
+            return redirect("/")
+        except:
+            flash("Niet gelukt om categorie toe te voegen!", "danger")
+
+    return render_template("category.html", title="Voeg Categorie Toe", form=form)
+
+@app.route("/category/<int:id>/edit", methods=['GET', 'POST'])
+@login_required
+def category_edit(id):
+    category = Category.query.get_or_404(id)
+    form = AddCategoryForm(obj=category)
+    form.submit.label.text = "Werk bij"
+
+    if form.validate_on_submit():
+        category.name = form.name.data
+
+        try:
+            db.session.commit()
+
+            flash("Categorie bijgewerkt!", "success")
+            return redirect("/")
+        except:
+            flash("Niet gelukt om categorie bij te werken!", "danger")
+
+    return render_template("category.html", title="Bewerk Categorie", form=form, category_id=id)
+
+@app.route("/category/<int:id>/delete")
+@login_required
+def category_delete(id):
+    Category.query.filter_by(id=id).delete()
+    db.session.commit()
+
+    flash("Categorie verwijderd!", "success")
+    return redirect("/")
+
+@app.route("/cable/add", methods=['GET', 'POST'])
 @login_required
 def cable_add():
     form = AddCableForm()
+    form.conn_a.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
+    form.conn_b.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
+    form.category.choices = [(category.id, category.name) for category in Category.query.all()]
+
     if form.validate_on_submit():
         cable = Cable(
-            name=form.name.data,
-            brand=form.brand.data,
-            category=form.category.data,
+            conn_a_id=form.conn_a.data,
+            conn_b_id=form.conn_b.data,
             length=form.length.data,
-            conn_a=form.conn_a.data,
-            conn_b=form.conn_b.data
+            category_id=form.category.data,
+            count=form.count.data
         )
 
         try:
@@ -111,12 +194,99 @@ def cable_add():
             db.session.commit()
 
             flash("Kabel toegevoegd!", "success")
-            return redirect("/inventory")
+            return redirect("/")
         except:
-            flash("Niet gelukt om de kabel toe te voegen!", "danger")
+            flash("Niet gelukt om kabel toe te voegen!", "danger")
 
-    return render_template("cable/add.html", title="Voeg Cable Toe", form=form)
+    return render_template("cable.html", title="Voeg Kabel Toe", form=form)
 
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('404.html', title="404"), 404
+@app.route("/cable/<int:id>/edit", methods=['GET', 'POST'])
+@login_required
+def cable_edit(id):
+    cable = Cable.query.get_or_404(id)
+    form = AddCableForm(obj=cable)
+    form.conn_a.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
+    form.conn_b.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
+    form.category.choices = [(category.id, category.name) for category in Category.query.all()]
+    form.submit.label.text = "Werk bij"
+
+    if form.validate_on_submit():
+        cable.conn_a_id = form.conn_a.data
+        cable.conn_b_id = form.conn_b.data
+        cable.length = form.length.data
+        cable.category_id = form.category.data
+        cable.count = form.count.data
+
+        try:
+            db.session.commit()
+
+            flash("Kabel gewijzigd!", "success")
+            return redirect("/")
+        except:
+            flash("Niet gelukt om kabel te wijzigen!", "danger")
+
+    return render_template("cable.html", title="Bewerk Kabel", form=form, cable_id=id)
+
+@app.route("/cable/<int:id>/delete")
+@login_required
+def cable_delete(id):
+    Cable.query.filter_by(id=id).delete()
+    db.session.commit()
+
+    flash("Kabel verwijderd!", "success")
+    return redirect("/")
+
+@app.route("/connector/add", methods=['GET', 'POST'])
+@login_required
+def connector_add():
+    form = AddConnectorForm()
+
+    if form.validate_on_submit():
+        connector = Connector(
+            name=form.name.data,
+            is_male=form.is_male.data
+        )
+
+        try:
+            db.session.add(connector)
+            db.session.commit()
+
+            flash("Connector toegevoegd!", "success")
+            return redirect("/")
+        except:
+            flash("Niet gelukt om connector toe te voegen!", "danger")
+
+    return render_template("connector.html", title="Voeg Connector Toe", form=form)
+
+@app.route("/connector/<int:id>/edit", methods=['GET', 'POST'])
+@login_required
+def connector_edit(id):
+    connector = Connector.query.get_or_404(id)
+    form = AddConnectorForm(obj=connector)
+    form.submit.label.text = "Werk bij"
+
+    if form.validate_on_submit():
+        connector.name = form.name.data
+        connector.is_male = form.is_male.data
+
+        try:
+            db.session.commit()
+
+            flash("Connector gewijzigd!", "success")
+            return redirect("/")
+        except:
+            flash("Niet gelukt om connector te wijzigen!", "danger")
+
+    return render_template("connector.html", title="Bewerk Connector", form=form, connector_id=id)
+
+@app.route("/connector/<int:id>/delete")
+@login_required
+def connector_delete(id):
+    try:
+        Connector.query.filter_by(id=id).delete()
+        db.session.commit()
+
+        flash("Connector verwijderd!", "success")
+        return redirect("/")
+    except:
+        flash("Niet gelukt om connector te verwijderen!", "danger")
