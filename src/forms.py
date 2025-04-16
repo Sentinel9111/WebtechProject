@@ -6,7 +6,7 @@ from wtforms.fields.simple import TextAreaField
 from models import User
 
 from flask_wtf import FlaskForm
-from wtforms.fields import SelectField, IntegerField, DecimalField, StringField, BooleanField, PasswordField, SubmitField
+from wtforms.fields import SelectField, IntegerField, DecimalField, StringField, BooleanField, PasswordField, SubmitField, TextAreaField, HiddenField, DateField
 from wtforms.validators import DataRequired, Length, Email, NumberRange, EqualTo, ValidationError
 
 def validate_username(form, username):
@@ -60,6 +60,7 @@ class AddJobForm(FlaskForm):
     description = TextAreaField("Beschrijving", validators=[Length(max=5000)])
     start_date = DateField("Startdatum", validators=[DataRequired()])
     end_date = DateField("Einddatum", validators=[DataRequired()])
+
     submit = SubmitField("Voeg toe")
 
     def validate_end_date(form, end_date):
