@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from wtforms.fields.datetime import DateField
 from wtforms.fields.simple import TextAreaField
 
@@ -59,3 +61,7 @@ class AddJobForm(FlaskForm):
     start_date = DateField("Startdatum", validators=[DataRequired()])
     end_date = DateField("Einddatum", validators=[DataRequired()])
     submit = SubmitField("Voeg toe")
+
+    def validate_end_date(form, end_date):
+        if end_date.data < form.start_date.data:
+            raise ValidationError("Einddatum mag niet eerder zijn dan de startdatum.")
