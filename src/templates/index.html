@@ -22,8 +22,8 @@
 {% endblock %} {% block content %}
     <h1>Inventaris</h1>
     <section>
-        <h2>Job</h2>
-        <a class="btn btn-primary" href="/job/add" role="button">Steve Job</a>
+        <h2>Klussen</h2>
+        <a class="btn btn-primary" href="/job/add" role="button">Voeg een klus toe</a>
         <table
                 data-toggle="table"
                 data-search="true"
@@ -69,8 +69,8 @@
         </table>
     </section>
     <section>
-        <h2>Equipment</h2>
-        <a class="btn btn-primary" href="/equipment/add" role="button">Voeg apparatuur toe.</a>
+        <h2>Apparatuur</h2>
+        <a class="btn btn-primary" href="/equipment/add" role="button">Voeg apparatuur toe</a>
         <table
                 data-toggle="table"
                 data-search="true"
@@ -96,7 +96,10 @@
                 Naam
             </th>
             <th data-field="category" data-custom-attribute="category" data-sortable="true">
-                Category
+                Categorie
+            </th>
+            <th data-field="action" data-custom-attribute="action">
+                Actie
             </th>
             </thead>
             <tbody>
@@ -106,6 +109,7 @@
                     <td data-text="{{ e.brand }}">{{ e.brand }}</td>
                     <td data-text="{{ e.name }}">{{ e.name }}</td>
                     <td data-text="{{ e.category.name }}">{{ e.category.name }}</td>
+                    <td><a href="equipment/{{ e.id }}/edit">Bewerken</a></td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -114,7 +118,7 @@
 
     <section>
         <h2>Kabels</h2>
-        <a class="btn btn-primary" href="/cable/add" role="button">Voeg een kabel toe.</a>
+        <a class="btn btn-primary" href="/cable/add" role="button">Voeg een kabel toe</a>
         <table
                 data-toggle="table"
                 data-search="true"
@@ -143,7 +147,10 @@
                 Lengte (m)
             </th>
             <th data-field="category" data-custom-attribute="category" data-sortable="true">
-                Category
+                Categorie
+            </th>
+            <th data-field="action" data-custom-attribute="action">
+                Actie
             </th>
             </thead>
             <tbody>
@@ -154,6 +161,7 @@
                     <td data-value="{{ c.conn_b_id }}">{{ c.conn_b.name }} ({{ c.conn_b.gender_label() }})</td>
                     <td data-value="{{ c.length }}">{{ c.length }}</td>
                     <td data-text="{{ c.category.name }}">{{ c.category.name }}</td>
+                    <td><a href="cable/{{ c.id }}/edit">Bewerken</a></td>
                 </tr>
             {% endfor %}
             </tbody>

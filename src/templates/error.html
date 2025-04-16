@@ -1,0 +1,12 @@
+{% extends "base.html" %} {% block content %}
+    <div>
+    <img src="https://http.cat/{{ code }}" class="rounded mx-auto d-block" alt="error {{ code }}">
+    </div>
+    <div class="h-100 d-flex align-items-center justify-content-center">
+        <p>{{ message }}</p>
+    </div>
+    <div class="h-100 d-flex align-items-center justify-content-center">
+        <a href="/" class="btn btn-secondary">Ga terug naar de homepagina.</a>
+    </div>
+
+{% endblock %}

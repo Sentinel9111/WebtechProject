@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block content %}
 <div class="mt-4 row justify-content-center">
     <div class="col-md-6">
-        <h2 class="text-center">Voeg Equipment Toe</h2>
+        <h2 class="text-center">Voeg apparatuur toe</h2>
 
         <form class="d-flex flex-column" style="gap: 1rem" method="POST" action="">
             {{ form.hidden_tag() }}
@@ -39,8 +39,9 @@
             </div>
         </form>
         {% if equipment_id %}
-            <a href="/equipment/{{equipment_id}}/delete" class="btn btn-danger">Delete</a>
+            <a href="/equipment/{{equipment_id}}/delete" class="btn btn-danger w-100">Verwijderen</a>
         {% endif %}
+    <br>
     </div>
 </div>
 {% endblock %}

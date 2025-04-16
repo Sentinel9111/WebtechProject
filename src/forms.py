@@ -1,3 +1,8 @@
+from datetime import datetime
+
+from wtforms.fields.datetime import DateField
+from wtforms.fields.simple import TextAreaField
+
 from models import User
 
 from flask_wtf import FlaskForm
@@ -52,8 +57,12 @@ class AddConnectorForm(FlaskForm):
 
 class AddJobForm(FlaskForm):
     name = StringField("Naam", validators=[DataRequired(), Length(min=1, max=50)])
-    description = TextAreaField("Description", validators=[Length(max=5000)])
-    start_date = DateField("Start date", validators=[DataRequired()])
-    end_date = DateField("End date", validators=[DataRequired()])
+    description = TextAreaField("Beschrijving", validators=[Length(max=5000)])
+    start_date = DateField("Startdatum", validators=[DataRequired()])
+    end_date = DateField("Einddatum", validators=[DataRequired()])
 
     submit = SubmitField("Voeg toe")
+
+    def validate_end_date(form, end_date):
+        if end_date.data < form.start_date.data:
+            raise ValidationError("Einddatum mag niet eerder zijn dan de startdatum.")
