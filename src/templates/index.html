@@ -98,6 +98,9 @@
             <th data-field="category" data-custom-attribute="category" data-sortable="true">
                 Categorie
             </th>
+            <th data-field="action" data-custom-attribute="action">
+                Actie
+            </th>
             </thead>
             <tbody>
             {% for e in equipment %}
@@ -106,6 +109,7 @@
                     <td data-text="{{ e.brand }}">{{ e.brand }}</td>
                     <td data-text="{{ e.name }}">{{ e.name }}</td>
                     <td data-text="{{ e.category.name }}">{{ e.category.name }}</td>
+                    <td><a href="equipment/{{ e.id }}/edit">Bewerken</a></td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -145,6 +149,9 @@
             <th data-field="category" data-custom-attribute="category" data-sortable="true">
                 Categorie
             </th>
+            <th data-field="action" data-custom-attribute="action">
+                Actie
+            </th>
             </thead>
             <tbody>
             {% for c in cables %}
@@ -154,6 +161,7 @@
                     <td data-value="{{ c.conn_b_id }}">{{ c.conn_b.name }} ({{ c.conn_b.gender_label() }})</td>
                     <td data-value="{{ c.length }}">{{ c.length }}</td>
                     <td data-text="{{ c.category.name }}">{{ c.category.name }}</td>
+                    <td><a href="cable/{{ c.id }}/edit">Bewerken</a></td>
                 </tr>
             {% endfor %}
             </tbody>
