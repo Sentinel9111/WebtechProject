@@ -1,5 +1,5 @@
 from app import app, db, bcrypt
-from forms import AddEquipmentForm, AddCategoryForm, AddCableForm, AddConnectorForm, RegistrationForm, LoginForm, AddJobForm
+from forms import EquipmentForm, CategoryForm, CableForm, ConnectorForm, RegistrationForm, LoginForm, JobForm
 from models import Equipment, User, Cable, Category, Connector, Job, EquipmentJob, CableJob
 
 
@@ -76,7 +76,7 @@ def account():
 @app.route("/equipment/add", methods=['GET', 'POST'])
 @login_required
 def equipment_add():
-    form = AddEquipmentForm()
+    form = EquipmentForm()
     form.category.choices = [(category.id, category.name) for category in Category.query.all()]
 
     if form.validate_on_submit():
@@ -102,7 +102,7 @@ def equipment_add():
 @login_required
 def equipment_edit(id):
     equipment = Equipment.query.get_or_404(id)
-    form = AddEquipmentForm(obj=equipment)
+    form = EquipmentForm(obj=equipment)
     form.category.choices = [(category.id, category.name) for category in Category.query.all()]
     form.submit.label.text = "Werk bij"
 
@@ -134,7 +134,7 @@ def equipment_delete(id):
 @app.route("/category/add", methods=['GET', 'POST'])
 @login_required
 def category_add():
-    form = AddCategoryForm()
+    form = CategoryForm()
 
     if form.validate_on_submit():
         category = Category(
@@ -156,7 +156,7 @@ def category_add():
 @login_required
 def category_edit(id):
     category = Category.query.get_or_404(id)
-    form = AddCategoryForm(obj=category)
+    form = CategoryForm(obj=category)
     form.submit.label.text = "Werk bij"
 
     if form.validate_on_submit():
@@ -184,7 +184,7 @@ def category_delete(id):
 @app.route("/cable/add", methods=['GET', 'POST'])
 @login_required
 def cable_add():
-    form = AddCableForm()
+    form = CableForm()
     form.conn_a.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
     form.conn_b.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
     form.category.choices = [(category.id, category.name) for category in Category.query.all()]
@@ -213,7 +213,7 @@ def cable_add():
 @login_required
 def cable_edit(id):
     cable = Cable.query.get_or_404(id)
-    form = AddCableForm(obj=cable)
+    form = CableForm(obj=cable)
     form.conn_a.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
     form.conn_b.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
     form.category.choices = [(category.id, category.name) for category in Category.query.all()]
@@ -249,7 +249,7 @@ def cable_delete(id):
 @app.route("/connector/add", methods=['GET', 'POST'])
 @login_required
 def connector_add():
-    form = AddConnectorForm()
+    form = ConnectorForm()
 
     if form.validate_on_submit():
         connector = Connector(
@@ -272,7 +272,7 @@ def connector_add():
 @login_required
 def connector_edit(id):
     connector = Connector.query.get_or_404(id)
-    form = AddConnectorForm(obj=connector)
+    form = ConnectorForm(obj=connector)
     form.submit.label.text = "Werk bij"
 
     if form.validate_on_submit():
@@ -314,7 +314,7 @@ def job_edit(id):
     return job_page(job)
 
 def job_page(job: Job|None = None):
-    class JobFormWithCounts(AddJobForm):
+    class JobFormWithCounts(JobForm):
         pass
 
     equipment = Equipment.query.all()
