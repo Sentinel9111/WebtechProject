@@ -1,42 +1,31 @@
-{% extends "base.html" %} {% block head_includes %}
+{% extends "base.html" %}
+
+{% block head_includes %}
 <!-- JQuery (for Bootstrap Table) -->
-<script
-    src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-    crossorigin="anonymous"
-></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
 <!-- Icons -->
-<link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-/>
-<link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"/>
 
 <!-- Bootstrap Table -->
-<link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.css"
-/>
-<script
-    defer
-    src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.js"
-></script>
-{% endblock %} {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.css"/>
+<script defer src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.24.0/dist/bootstrap-table.min.js"></script>
+{% endblock %}
+
+{% block content %}
 <h1>Inventaris</h1>
 <section>
-    <h2>Klussen</h2>
-    <a class="btn btn-primary" href="/job/add" role="button"
-        >Voeg een klus toe</a
-    >
+    <div id="jobs-toolbar" class="d-flex justify-content-between align-items-center">
+        <h2 class="me-3">Klussen</h2>
+        <a class="btn btn-primary" href="/job/add" role="button">Voeg een klus toe</a>
+    </div>
+
     <table
         data-toggle="table"
         data-search="true"
         data-show-columns="true"
-        data-toolbar="#toolbar"
+        data-toolbar="#jobs-toolbar"
         data-search="true"
         data-show-columns="true"
         data-show-columns-toggle-all="true"
@@ -47,31 +36,21 @@
         data-sortable="true"
     >
         <thead>
-            <th
-                data-field="name"
-                data-custom-attribute="name"
-                data-sortable="true"
-            >
+            <th data-field="name" data-custom-attribute="name" data-sortable="true">
                 Naam
             </th>
             <th data-field="description" data-custom-attribute="description">
                 Beschrijving
             </th>
-            <th
-                data-field="start_date"
-                data-custom-attribute="start_date"
-                data-sortable="true"
-            >
+            <th data-field="start_date" data-custom-attribute="start_date" data-sortable="true">
                 Startdatum
             </th>
-            <th
-                data-field="end_date"
-                data-custom-attribute="end_date"
-                data-sortable="true"
-            >
+            <th data-field="end_date" data-custom-attribute="end_date" data-sortable="true">
                 Einddatum
             </th>
-            <th data-field="action" data-custom-attribute="action">Actie</th>
+            <th data-field="action" data-custom-attribute="action">
+                Actie
+            </th>
         </thead>
         <tbody>
             {% for j in jobs %}
@@ -86,16 +65,17 @@
         </tbody>
     </table>
 </section>
-<section>
-    <h2>Apparatuur</h2>
-    <a class="btn btn-primary" href="/equipment/add" role="button"
-        >Voeg apparatuur toe</a
-    >
+
+<section class="mt-4">
+    <div id="equipment-toolbar" class="d-flex justify-content-between align-items-center">
+        <h2 class="me-3">Apparatuur</h2>
+        <a class="btn btn-primary" href="/equipment/add" role="button">Voeg apparatuur toe</a>
+    </div>
     <table
         data-toggle="table"
         data-search="true"
         data-show-columns="true"
-        data-toolbar="#toolbar"
+        data-toolbar="#equipment-toolbar"
         data-search="true"
         data-show-columns="true"
         data-show-columns-toggle-all="true"
@@ -106,44 +86,27 @@
         data-sortable="true"
     >
         <thead>
-            <th
-                data-width="1rem"
-                data-field="count"
-                data-custom-attribute="count"
-                data-sortable="true"
-            >
+            <th data-width="1rem" data-field="count" data-custom-attribute="count" data-sortable="true">
                 Beschikbaar
             </th>
-            <th
-                data-field="brand"
-                data-custom-attribute="brand"
-                data-sortable="true"
-            >
+            <th data-field="brand" data-custom-attribute="brand" data-sortable="true">
                 Merk
             </th>
-            <th
-                data-field="name"
-                data-custom-attribute="name"
-                data-sortable="true"
-            >
+            <th data-field="name" data-custom-attribute="name" data-sortable="true">
                 Naam
             </th>
-            <th
-                data-field="category"
-                data-custom-attribute="category"
-                data-sortable="true"
-            >
+            <th data-field="category" data-custom-attribute="category" data-sortable="true">
                 Categorie
             </th>
-            <th data-field="action" data-custom-attribute="action">Actie</th>
+            <th data-field="action" data-custom-attribute="action">
+                Actie
+            </th>
         </thead>
         <tbody>
             {% for e in equipment %}
             <tr id="{{ e.id }}" class="tr-class-1">
                 <td>
-                    <span
-                        class="{{ 'text-danger fw-bold' if e.available_count() == 0 else '' }}"
-                    >
+                    <span class="{{ 'text-danger fw-bold' if e.available_count() == 0 else '' }}">
                         {{ e.available_count() }}
                     </span>
                     /
@@ -159,16 +122,16 @@
     </table>
 </section>
 
-<section>
-    <h2>Kabels</h2>
-    <a class="btn btn-primary" href="/cable/add" role="button"
-        >Voeg een kabel toe</a
-    >
+<section class="mt-4">
+    <div id="cables-toolbar" class="d-flex justify-content-between align-items-center">
+        <h2 class="me-3">Kabels</h2>
+        <a class="btn btn-primary" href="/cable/add" role="button">Voeg een kabel toe</a>
+    </div>
     <table
         data-toggle="table"
         data-search="true"
         data-show-columns="true"
-        data-toolbar="#toolbar"
+        data-toolbar="#cables-toolbar"
         data-search="true"
         data-show-columns="true"
         data-show-columns-toggle-all="true"
