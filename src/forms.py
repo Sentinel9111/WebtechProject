@@ -55,7 +55,7 @@ class AddConnectorForm(FlaskForm):
 
 class AddJobForm(FlaskForm):
     name = StringField("Naam", validators=[DataRequired(), Length(min=1, max=50)])
-    description = TextAreaField("Description", validators=[Length(max=5000)])
-    start_date = DateField("Start date", validators=[DataRequired()])
-    end_date = DateField("End date", validators=[DataRequired()])
+    description = TextAreaField("Beschrijving", validators=[Length(max=5000)])
+    start_date = DateField("Startdatum", validators=[DataRequired()])
+    end_date = DateField("Einddatum", validators=[DataRequired()])
     submit = SubmitField("Voeg toe")

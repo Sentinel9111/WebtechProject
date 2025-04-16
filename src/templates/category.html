@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block content %}
 <div class="mt-4 row justify-content-center">
   <div class="col-md-6">
-    <h2 class="text-center">Voeg Categorie Toe</h2>
+    <h2 class="text-center">Voeg een categorie toe</h2>
 
     <form class="d-flex flex-column" style="gap: 1rem" method="POST" action="">
         {{ form.hidden_tag() }}
@@ -17,7 +17,7 @@
         </div>
     </form>
     {% if category_id %}
-        <a href="/category/{{category_id}}/delete" class="btn btn-danger">Delete</a>
+        <a href="/category/{{category_id}}/delete" class="btn btn-danger">Verwijderen</a>
     {% endif %}
   </div>
 </div>
