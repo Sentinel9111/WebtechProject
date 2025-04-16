@@ -1,10 +1,7 @@
-from wtforms.fields.datetime import DateField
-from wtforms.fields.simple import TextAreaField
-
 from models import User
 
 from flask_wtf import FlaskForm
-from wtforms.fields import SelectField, IntegerField, DecimalField, StringField, BooleanField, PasswordField, SubmitField
+from wtforms.fields import SelectField, IntegerField, DecimalField, StringField, BooleanField, PasswordField, SubmitField, TextAreaField, HiddenField, DateField
 from wtforms.validators import DataRequired, Length, Email, NumberRange, EqualTo, ValidationError
 
 def validate_username(form, username):
@@ -58,4 +55,5 @@ class AddJobForm(FlaskForm):
     description = TextAreaField("Description", validators=[Length(max=5000)])
     start_date = DateField("Start date", validators=[DataRequired()])
     end_date = DateField("End date", validators=[DataRequired()])
+
     submit = SubmitField("Voeg toe")

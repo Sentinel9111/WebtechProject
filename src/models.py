@@ -1,6 +1,5 @@
 from app import db, login_manager
 from flask_login import UserMixin
-import datetime
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -35,19 +34,6 @@ class Job(db.Model):
 
     def __repr__(self):
         return f"Job('{self.id}', '{self.name}', '{self.description}', '{self.start_date}', '{self.end_date}')"
-
-class UserJob(db.Model):
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True, nullable=False)
-    user = db.relationship('User', foreign_keys=[user_id])
-    job_id = db.Column(db.Integer, db.ForeignKey('job.id'), primary_key=True, nullable=False)
-    job = db.relationship('Job', foreign_keys=[job_id])
-
-    def __init__(self, user_id, job_id):
-        self.user_id = user_id
-        self.job_id = job_id
-
-    def __repr__(self):
-        return f"UserJob('{self.user_id}', '{self.job_id}')"
 
 class Equipment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -92,10 +78,12 @@ class EquipmentJob(db.Model):
     equipment = db.relationship('Equipment', foreign_keys=[equipment_id])
     job_id = db.Column(db.Integer, db.ForeignKey('job.id'), primary_key=True, nullable=False)
     job = db.relationship('Job', foreign_keys=[job_id])
+    count = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, equipment_id, job_id):
+    def __init__(self, equipment_id, job_id, count):
         self.equipment_id = equipment_id
         self.job_id = job_id
+        self.count = count
 
     def __repr__(self):
         return f"EquipmentJob('{self.equipment_id}', '{self.job_id}')"
@@ -105,10 +93,12 @@ class CableJob(db.Model):
     cable = db.relationship('Cable', foreign_keys=[cable_id])
     job_id = db.Column(db.Integer, db.ForeignKey('job.id'), primary_key=True, nullable=False)
     job = db.relationship('Job', foreign_keys=[job_id])
+    count = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, cable_id, job_id):
+    def __init__(self, cable_id, job_id, count):
         self.cable_id = cable_id
         self.job_id = job_id
+        self.count = count
 
     def __repr__(self):
         return f"CableJob('{self.cable_id}', '{self.job_id}')"
