@@ -19,6 +19,10 @@ def validate_email(form, email):
     if user:
         raise ValidationError("Gebruik een ander email adres.")
 
+def validate_end_date(form, end_date):
+    if end_date.data < form.start_date.data:
+        raise ValidationError("Einddatum mag niet eerder zijn dan de startdatum.")
+
 class LoginForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("Wachtwoord", validators=[DataRequired()])
@@ -59,10 +63,5 @@ class AddJobForm(FlaskForm):
     name = StringField("Naam", validators=[DataRequired(), Length(min=1, max=50)])
     description = TextAreaField("Beschrijving", validators=[Length(max=5000)])
     start_date = DateField("Startdatum", validators=[DataRequired()])
-    end_date = DateField("Einddatum", validators=[DataRequired()])
-
+    end_date = DateField("Einddatum", validators=[DataRequired(), validate_end_date])
     submit = SubmitField("Voeg toe")
-
-    def validate_end_date(form, end_date):
-        if end_date.data < form.start_date.data:
-            raise ValidationError("Einddatum mag niet eerder zijn dan de startdatum.")

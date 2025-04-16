@@ -217,6 +217,7 @@ def cable_edit(id):
     form.conn_a.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
     form.conn_b.choices = [(conn.id, f'{conn.name} ({conn.gender_label()})') for conn in Connector.query.all()]
     form.category.choices = [(category.id, category.name) for category in Category.query.all()]
+
     form.submit.label.text = "Werk bij"
 
     if form.validate_on_submit():
@@ -296,59 +297,58 @@ def connector_delete(id):
         db.session.commit()
 
         flash("Connector verwijderd!", "success")
-        return redirect("/")
     except:
         flash("Niet gelukt om de connector te verwijderen!", "danger")
+
+    return redirect("/")
 
 @app.route("/job/add", methods=['GET', 'POST'])
 @login_required
 def job_add():
-    form = AddJobForm()
-
-    if form.validate_on_submit():
-        job = Job(
-            name=form.name.data,
-            description=form.description.data,
-            start_date=form.start_date.data,
-            end_date=form.end_date.data,
-        )
-
-        try:
-            db.session.add(job)
-            db.session.commit()
-
-            flash("Klus toegevoegd!", "success")
-            return redirect("/")
-        except:
-            flash("Niet gelukt om een klus toe te voegen!", "danger")
-
-    return render_template("job.html", title="Voeg een klus toe", form=form)
+    return job_page()
 
 @app.route("/job/<int:id>/edit", methods=['GET', 'POST'])
 @login_required
 def job_edit(id):
     job = Job.query.get_or_404(id)
+    return job_page(job)
+
+def job_page(job: Job|None = None):
+    class JobFormWithCounts(AddJobForm):
+        pass
 
     equipment = Equipment.query.all()
-    equipment_jobs = EquipmentJob.query.filter_by(job_id=job.id).all()
+    cables = Cable.query.all()
+
+    equipment_jobs = EquipmentJob.query.filter_by(job_id=job.id).all() if job else []
     for e in equipment:
         value = next((ej.count for ej in equipment_jobs if ej.equipment_id == e.id), 0)
-        setattr(AddJobForm, f'e_count_{e.id}', IntegerField("Aantal", default=value, validators=[NumberRange(min=0, max=e.count)]))
+        setattr(JobFormWithCounts, f'e_count_{e.id}', IntegerField("Aantal", default=value, validators=[NumberRange(min=0, max=e.count)]))
 
-    cables = Cable.query.all()
-    cable_jobs = CableJob.query.filter_by(job_id=job.id).all()
+    cable_jobs = CableJob.query.filter_by(job_id=job.id).all() if job else []
     for c in cables:
         value = next((cj.count for cj in cable_jobs if cj.cable_id == c.id), 0)
-        setattr(AddJobForm, f'c_count_{c.id}', IntegerField("Aantal", default=value, validators=[NumberRange(min=0, max=c.count)]))
+        setattr(JobFormWithCounts, f'c_count_{c.id}', IntegerField("Aantal", default=value, validators=[NumberRange(min=0, max=c.count)]))
 
-    form = AddJobForm(obj=job)
-    form.submit.label.text = "Werk bij"
+    form = JobFormWithCounts(obj=job)
+
+    if job:
+        form.submit.label.text = "Werk bij"
 
     if form.validate_on_submit():
-        job.name = form.name.data
-        job.description = form.description.data
-        job.start_date = form.start_date.data
-        job.end_date = form.end_date.data
+        if job:
+            job.name = form.name.data
+            job.description = form.description.data
+            job.start_date = form.start_date.data
+            job.end_date = form.end_date.data
+        else:
+            job = Job(
+                name=form.name.data,
+                description=form.description.data,
+                start_date=form.start_date.data,
+                end_date=form.end_date.data
+            )
+            db.session.add(job)
 
         try:
             for e in equipment:
@@ -393,10 +393,13 @@ def job_edit(id):
 
             flash("Klus gewijzigd!", "success")
             return redirect("/")
+
         except:
             flash("Niet gelukt om de klus te wijzigen!", "danger")
 
-    return render_template("job.html", title="Bewerk de klus", form=form, job_id=id, equipment=equipment, cables=cables)
+    id = job.id if job else None
+    title = "Bewerk klus" if job else "Maak een nieuwe klus"
+    return render_template("job.html", title=title, form=form, job_id=id, equipment=equipment, cables=cables)
 
 @app.route("/job/<int:id>/delete")
 @login_required
@@ -406,6 +409,7 @@ def job_delete(id):
         db.session.commit()
 
         flash("Klus verwijderd!", "success")
-        return redirect("/")
     except:
         flash("Niet gelukt om de klus te verwijderen!", "danger")
+
+    return redirect("/")

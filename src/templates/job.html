@@ -29,7 +29,11 @@
 
 <div class="mt-4 row justify-content-center">
     <div class="col-md-6">
-        <h2 class="text-center">Voeg een klus toe</h2>
+        {% if job_id %}
+            <h2 class="text-center">Bewerk klus</h2>
+        {% else %}
+            <h2 class="text-center">Voeg een klus toe</h2>
+        {% endif %}
 
         <form
             id="job-form"
