@@ -27,7 +27,6 @@
 ></script>
 {% endblock %} {% block content %}
 
-
 <div class="mt-4 row justify-content-center">
     <div class="col-md-6">
         <h2 class="text-center">Voeg een klus toe</h2>
@@ -44,28 +43,28 @@
                 {{ form.name.label(class="form-label") }} {{
                 form.name(class="form-control") }} {% for error in
                 form.name.errors %}
-                    <div class="text-danger">{{ error }}</div>
+                <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
             <div class="form-group">
                 {{ form.description.label(class="form-label") }} {{
                 form.description(class="form-control") }} {% for error in
                 form.description.errors %}
-                    <div class="text-danger">{{ error }}</div>
+                <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
             <div class="form-group">
                 {{ form.start_date.label(class="form-label") }} {{
                 form.start_date(class="form-control") }} {% for error in
                 form.start_date.errors %}
-                    <div class="text-danger">{{ error }}</div>
+                <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
             <div class="form-group">
                 {{ form.end_date.label(class="form-label") }} {{
                 form.end_date(class="form-control") }} {% for error in
                 form.end_date.errors %}
-                    <div class="text-danger">{{ error }}</div>
+                <div class="text-danger">{{ error }}</div>
                 {% endfor %}
             </div>
             <div class="form-group">
@@ -125,31 +124,103 @@
                         <tbody>
                             {% for e in equipment %}
                             <tr id="{{ e.id }}" class="tr-class-1">
-                                <td>
-                                    {{ form['count_' ~ e.id](class_='form-control') }}
-                                </td>
+                                <td>{{ form['e_count_' ~ e.id](class_='form-control') }}</td>
                                 <td data-value="{{ e.count }}">{{ e.count }}</td>
                                 <td data-text="{{ e.brand }}">{{ e.brand }}</td>
                                 <td data-text="{{ e.name }}">{{ e.name }}</td>
-                                <td data-text="{{ e.category.name }}">
-                                    {{ e.category.name }}
-                                </td>
+                                <td data-text="{{ e.category.name }}">{{ e.category.name }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </section>
-             </div>
+            </div>
+            <div class="form-group">
+                <section>
+                    <h2>Kabels</h2>
+                    <table
+                        data-toggle="table"
+                        data-search="true"
+                        data-show-columns="true"
+                        data-toolbar="#toolbar"
+                        data-search="true"
+                        data-show-columns="true"
+                        data-show-columns-toggle-all="true"
+                        data-minimum-count-columns="2"
+                        data-pagination="true"
+                        data-id-field="id"
+                        data-page-list="[10, 25, 50, 100, all]"
+                        data-sortable="true"
+                    >
+                        <thead>
+                            <th
+                                data-field="count"
+                                data-custom-attribute="count"
+                            >
+                                Aantal
+                            </th>
+                            <th
+                                data-width="1rem"
+                                data-field="total"
+                                data-custom-attribute="total"
+                                data-sortable="true"
+                            >
+                                Totaal
+                            </th>
+                            <th
+                                data-field="conn_a"
+                                data-custom-attribute="conn_a"
+                                data-sortable="true"
+                            >
+                                Connector A
+                            </th>
+                            <th
+                                data-field="conn_b"
+                                data-custom-attribute="conn_b"
+                                data-sortable="true"
+                            >
+                                Connector B
+                            </th>
+                            <th
+                                data-field="length"
+                                data-custom-attribute="length"
+                                data-sortable="true"
+                            >
+                                Lengte (m)
+                            </th>
+                            <th
+                                data-field="category"
+                                data-custom-attribute="category"
+                                data-sortable="true"
+                            >
+                                Category
+                            </th>
+                        </thead>
+                        <tbody>
+                            {% for c in cables %}
+                            <tr id="{{ c.id }}" class="tr-class-1">
+                                <td>{{ form['c_count_' ~ c.id](class_='form-control') }}</td>
+                                <td data-value="{{ c.count }}">{{ c.count }}</td>
+                                <td data-text="{{ c.conn_a }}">{{ c.conn_a.name }} ({{ c.conn_a.gender_label() }})</td>
+                                <td data-text="{{ c.conn_b }}">{{ c.conn_b.name }} ({{ c.conn_b.gender_label() }})</td>
+                                <td data-text="{{ c.length }}">{{ c.length }}</td>
+                                <td data-text="{{ c.category.name }}">{{ c.category.name }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </section>
+            </div>
             <div class="form-group mt-3">
                 {{ form.submit(class="btn btn-primary w-100") }}
             </div>
         </form>
         {% if job_id %}
-            <div>
+        <div>
             <a href="/job/{{job_id}}/delete" class="btn btn-danger w-100 mt-4">Verwijderen</a>
-            </div>
+        </div>
         {% endif %}
-    <br>
+        <br />
     </div>
 </div>
 {% endblock %}

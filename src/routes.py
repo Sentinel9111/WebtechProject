@@ -8,6 +8,11 @@ from flask_login import login_user, current_user, logout_user, login_required
 from wtforms.fields import IntegerField
 from wtforms.validators import NumberRange
 
+@app.errorhandler(Exception)
+def handle_error(e):
+    code = getattr(e, 'code', 500)
+    return render_template("error.html", code=code, message=str(e)), code
+
 @app.route("/")
 @login_required
 def index():
@@ -15,11 +20,6 @@ def index():
     cables = Cable.query.all()
     equipment = Equipment.query.all()
     return render_template('index.html', title="Inventaris", equipment=equipment, cables=cables, jobs=jobs)
-
-@app.errorhandler(Exception)
-def handle_error(e):
-    code = getattr(e, 'code', 500)
-    return render_template("error.html", code=code, message=str(e)), code
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -328,11 +328,18 @@ def job_add():
 @login_required
 def job_edit(id):
     job = Job.query.get_or_404(id)
+
     equipment = Equipment.query.all()
     equipment_jobs = EquipmentJob.query.filter_by(job_id=job.id).all()
     for e in equipment:
         value = next((ej.count for ej in equipment_jobs if ej.equipment_id == e.id), 0)
-        setattr(AddJobForm, f'count_{e.id}', IntegerField("Aantal", default=value, validators=[NumberRange(min=0, max=e.count)]))
+        setattr(AddJobForm, f'e_count_{e.id}', IntegerField("Aantal", default=value, validators=[NumberRange(min=0, max=e.count)]))
+
+    cables = Cable.query.all()
+    cable_jobs = CableJob.query.filter_by(job_id=job.id).all()
+    for c in cables:
+        value = next((cj.count for cj in cable_jobs if cj.cable_id == c.id), 0)
+        setattr(AddJobForm, f'c_count_{c.id}', IntegerField("Aantal", default=value, validators=[NumberRange(min=0, max=c.count)]))
 
     form = AddJobForm(obj=job)
     form.submit.label.text = "Werk bij"
@@ -343,11 +350,9 @@ def job_edit(id):
         job.start_date = form.start_date.data
         job.end_date = form.end_date.data
 
-        equipment = Equipment.query.all()
-
         try:
             for e in equipment:
-                count_attr = getattr(form, f'count_{e.id}')
+                count_attr = getattr(form, f'e_count_{e.id}')
                 count_value = count_attr.data if count_attr else 0
 
                 equipment_job = EquipmentJob.query.filter_by(job_id=job.id, equipment_id=e.id).first()
@@ -365,6 +370,25 @@ def job_edit(id):
                 elif equipment_job:
                     db.session.delete(equipment_job)
 
+            for c in cables:
+                count_attr = getattr(form, f'c_count_{c.id}')
+                count_value = count_attr.data if count_attr else 0
+
+                cable_job = CableJob.query.filter_by(job_id=job.id, cable_id=c.id).first()
+
+                if count_value > 0:
+                    if cable_job:
+                        cable_job.count = count_value
+                    else:
+                        new_cable_job = CableJob(
+                            job_id=job.id,
+                            cable_id=c.id,
+                            count=count_value
+                        )
+                        db.session.add(new_cable_job)
+                elif cable_job:
+                    db.session.delete(cable_job)
+
             db.session.commit()
 
             flash("Klus gewijzigd!", "success")
@@ -372,7 +396,7 @@ def job_edit(id):
         except:
             flash("Niet gelukt om de klus te wijzigen!", "danger")
 
-    return render_template("job.html", title="Bewerk de klus", form=form, job_id=id, equipment=equipment)
+    return render_template("job.html", title="Bewerk de klus", form=form, job_id=id, equipment=equipment, cables=cables)
 
 @app.route("/job/<int:id>/delete")
 @login_required
